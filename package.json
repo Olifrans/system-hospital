@@ -9,22 +9,27 @@
     "dev": "nodemon server.js",
     "test": "node --test"
   },
-  "keywords": ["hospital", "healthcare", "ai", "chatbot"],
+  "keywords": [
+    "hospital",
+    "healthcare",
+    "ai",
+    "chatbot"
+  ],
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.18.3",
-    "dotenv": "^16.4.5",
-    "axios": "^1.6.8",
-    "cors": "^2.8.5",
-    "helmet": "^7.1.0",
-    "express-rate-limit": "^7.2.0",
-    "openai": "^4.28.4",
     "@anthropic-ai/sdk": "^0.18.0",
-    "@google/generative-ai": "^0.2.1"
+    "@google/generative-ai": "^0.2.1",
+    "axios": "^1.15.2",
+    "cors": "^2.8.6",
+    "dotenv": "^16.6.1",
+    "express": "^4.22.1",
+    "express-rate-limit": "^7.5.1",
+    "helmet": "^7.2.0",
+    "openai": "^4.104.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.0"
+    "nodemon": "^3.1.14"
   },
   "engines": {
     "node": ">=18.0.0"

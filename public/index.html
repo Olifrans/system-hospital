@@ -1825,6 +1825,8 @@
     </style>
 </head>
 
+
+
 <body>
 
     <!-- ===== SIDEBAR ===== -->
@@ -1871,10 +1873,11 @@
 
     <!-- ===== MAIN CONTENT ===== -->
     <div class="main-content">
-        <!-- HEADER -->
+
+        <!-- ===== HEADER ===== -->
         <header class="header">
             <div class="header-left">
-                <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+                <button class="toggle-btn" onclick="toggleSidebar()" title="Menu">☰</button>
                 <div class="page-title">
                     <h1 id="pageTitle">Dashboard</h1>
                     <p id="pageSubtitle">Visão geral do sistema hospitalar</p>
@@ -1886,30 +1889,25 @@
                     <input type="text" placeholder="Buscar pacientes, médicos..." id="globalSearch"
                         oninput="handleGlobalSearch(this.value)">
                 </div>
-                <button class="header-btn" onclick="toggleNotifications()">🔔<span class="badge-dot"></span></button>
-                <button class="header-btn" onclick="toggleChatbot()">🤖</button>
-                <button class="header-btn" onclick="toggleFullscreen()">⛶</button>
+                <button class="header-btn" onclick="toggleNotifications()" title="Notificações">
+                    🔔<span class="badge-dot"></span>
+                </button>
+                <button class="header-btn" onclick="toggleChatbot()" title="Chatbot AI">🤖</button>
+                <button class="header-btn" onclick="toggleFullscreen()" title="Tela cheia">⛶</button>
             </div>
         </header>
 
-
-
-
-
-
-
-        <!-- CHATBOT PANEL -->
-        <!-- CHATBOT PANEL -->
+        <!-- ===== CHATBOT PANEL ===== -->
         <div class="chatbot-panel" id="chatbotPanel">
             <div class="chatbot-header">
                 <div class="chatbot-title">
                     <span class="chatbot-avatar">🤖</span>
                     <div>
                         <strong id="chatbotName">MedAssistente</strong>
-                        <div class="chatbot-provider-wrapper" style="margin-top: 4px;">
+                        <div class="chatbot-provider-wrapper">
                             <select id="providerSelect" class="provider-select"
                                 onchange="handleProviderChange(this.value)">
-                                <option value="">Carregando providers...</option>
+                                <option value="">Carregando modelos...</option>
                             </select>
                         </div>
                     </div>
@@ -1939,21 +1937,20 @@
             <div class="chatbot-input">
                 <textarea id="chatbotInput" placeholder="Digite sua mensagem..." rows="2"
                     onkeydown="handleChatKeydown(event)"></textarea>
-                <button class="chatbot-send" onclick="sendChatMessage()">➤</button>
+                <button class="chatbot-send" onclick="sendChatMessage()" title="Enviar">➤</button>
             </div>
 
-            <div class="chatbot-typing" id="chatbotTyping" style="display: none;">
-                <span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>
+            <div class="chatbot-typing" id="chatbotTyping">
+                <span class="typing-dot"></span>
+                <span class="typing-dot"></span>
+                <span class="typing-dot"></span>
             </div>
         </div>
 
-
+        <!-- Overlay do Chatbot (apenas um) -->
         <div class="chatbot-overlay" id="chatbotOverlay" onclick="toggleChatbot()"></div>
 
-
-
-
-        <!-- NOTIFICATION PANEL -->
+        <!-- ===== NOTIFICATION PANEL ===== -->
         <div class="notification-panel" id="notificationPanel">
             <div class="notification-panel-header">
                 <strong>Notificações</strong>
@@ -1978,7 +1975,7 @@
             </div>
         </div>
 
-        <!-- PAGE CONTENT -->
+        <!-- ===== PAGE CONTENT ===== -->
         <div class="page-content">
 
             <!-- ===== DASHBOARD PAGE ===== -->
@@ -2348,15 +2345,19 @@
                     </div>
                 </div>
             </section>
+
         </div>
     </div>
 
     <!-- ===== MODALS ===== -->
+
     <!-- Patient Modal -->
     <div class="modal-overlay" id="patientModal">
         <div class="modal">
-            <div class="modal-header"><span class="modal-title">Cadastrar Paciente</span><button class="modal-close"
-                    onclick="closeModal('patientModal')">✕</button></div>
+            <div class="modal-header">
+                <span class="modal-title">Cadastrar Paciente</span>
+                <button class="modal-close" onclick="closeModal('patientModal')">✕</button>
+            </div>
             <div class="modal-body">
                 <div class="form-row">
                     <div class="form-group"><label class="form-label">Nome Completo</label><input type="text"
@@ -2408,8 +2409,10 @@
     <!-- Appointment Modal -->
     <div class="modal-overlay" id="appointmentModal">
         <div class="modal">
-            <div class="modal-header"><span class="modal-title">Agendar Consulta</span><button class="modal-close"
-                    onclick="closeModal('appointmentModal')">✕</button></div>
+            <div class="modal-header">
+                <span class="modal-title">Agendar Consulta</span>
+                <button class="modal-close" onclick="closeModal('appointmentModal')">✕</button>
+            </div>
             <div class="modal-body">
                 <div class="form-group"><label class="form-label">Paciente</label><select class="form-select"
                         id="apptPatient">
@@ -2450,8 +2453,10 @@
     <!-- Ticket Modal -->
     <div class="modal-overlay" id="ticketModal">
         <div class="modal">
-            <div class="modal-header"><span class="modal-title">Novo Atendimento</span><button class="modal-close"
-                    onclick="closeModal('ticketModal')">✕</button></div>
+            <div class="modal-header">
+                <span class="modal-title">Novo Atendimento</span>
+                <button class="modal-close" onclick="closeModal('ticketModal')">✕</button>
+            </div>
             <div class="modal-body">
                 <div class="form-group"><label class="form-label">Paciente</label><select class="form-select"
                         id="ticketPatient">
@@ -2490,8 +2495,10 @@
     <!-- Doctor Modal -->
     <div class="modal-overlay" id="doctorModal">
         <div class="modal">
-            <div class="modal-header"><span class="modal-title">Cadastrar Médico</span><button class="modal-close"
-                    onclick="closeModal('doctorModal')">✕</button></div>
+            <div class="modal-header">
+                <span class="modal-title">Cadastrar Médico</span>
+                <button class="modal-close" onclick="closeModal('doctorModal')">✕</button>
+            </div>
             <div class="modal-body">
                 <div class="form-group"><label class="form-label">Nome Completo</label><input type="text"
                         class="form-input" id="doctorName" placeholder="Nome do médico"></div>
@@ -2524,13 +2531,15 @@
         </div>
     </div>
 
-    <!-- TOAST CONTAINER -->
+    <!-- ===== TOAST CONTAINER ===== -->
     <div class="toast-container" id="toastContainer"></div>
+
 
     <!-- ===== JAVASCRIPT ===== -->
     <script>
         // ===== DATA STORE =====
         const avatarColors = ['#0077B6', '#00B4D8', '#00C9A7', '#FF6B6B', '#FFB800', '#8B5CF6', '#EC4899', '#F59E0B', '#10B981', '#6366F1'];
+
         let patients = [
             { id: 'P001', name: 'Maria Oliveira', cpf: '123.456.789-00', birth: '1985-03-15', age: 41, phone: '(11) 98765-4321', insurance: 'Unimed', blood: 'A+', status: 'active', lastVisit: '2026-04-15' },
             { id: 'P002', name: 'João Santos', cpf: '987.654.321-00', birth: '1978-07-22', age: 47, phone: '(11) 91234-5678', insurance: 'Bradesco Saúde', blood: 'O+', status: 'active', lastVisit: '2026-04-17' },
@@ -2541,6 +2550,7 @@
             { id: 'P007', name: 'Luciana Ferreira', cpf: '147.258.369-00', birth: '1988-12-25', age: 37, phone: '(11) 98901-2345', insurance: 'Particular', blood: 'B-', status: 'active', lastVisit: '2026-04-16' },
             { id: 'P008', name: 'Pedro Mendes', cpf: '369.258.147-00', birth: '2000-06-18', age: 25, phone: '(11) 92345-6789', insurance: 'Amil', blood: 'O+', status: 'active', lastVisit: '2026-04-14' },
         ];
+
         let doctors = [
             { id: 'D001', name: 'Dr. Ricardo Silva', crm: 'CRM/SP 123456', specialty: 'Cardiologia', phone: '(11) 91111-1111', email: 'ricardo@hospital.com', patients: 245, rating: 4.9, color: '#0077B6' },
             { id: 'D002', name: 'Dra. Patrícia Santos', crm: 'CRM/SP 234567', specialty: 'Neurologia', phone: '(11) 92222-2222', email: 'patricia@hospital.com', patients: 189, rating: 4.8, color: '#8B5CF6' },
@@ -2549,6 +2559,7 @@
             { id: 'D005', name: 'Dr. Fernando Costa', crm: 'CRM/SP 567890', specialty: 'Dermatologia', phone: '(11) 95555-5555', email: 'fernando@hospital.com', patients: 156, rating: 4.6, color: '#F59E0B' },
             { id: 'D006', name: 'Dra. Juliana Alves', crm: 'CRM/SP 678901', specialty: 'Ginecologia', phone: '(11) 96666-6666', email: 'juliana@hospital.com', patients: 298, rating: 4.9, color: '#10B981' },
         ];
+
         let appointments = [
             { id: 'A001', patient: 'Maria Oliveira', doctor: 'Dr. Ricardo Silva', specialty: 'Cardiologia', date: '2026-04-18', time: '08:00', status: 'confirmed' },
             { id: 'A002', patient: 'João Santos', doctor: 'Dra. Patrícia Santos', specialty: 'Neurologia', date: '2026-04-18', time: '09:30', status: 'confirmed' },
@@ -2559,6 +2570,7 @@
             { id: 'A007', patient: 'Pedro Mendes', doctor: 'Dr. Ricardo Silva', specialty: 'Cardiologia', date: '2026-04-19', time: '10:00', status: 'confirmed' },
             { id: 'A008', patient: 'Roberto Almeida', doctor: 'Dr. Marcos Oliveira', specialty: 'Ortopedia', date: '2026-04-20', time: '09:00', status: 'cancelled' },
         ];
+
         let tickets = [
             { id: 'TK001', patient: 'Carlos Pereira', subject: 'Dor intensa no peito', priority: 'high', status: 'open', date: '2026-04-18', category: 'Emergência' },
             { id: 'TK002', patient: 'Maria Oliveira', subject: 'Resultado de exames', priority: 'medium', status: 'progress', date: '2026-04-18', category: 'Consulta' },
@@ -2570,217 +2582,1045 @@
             { id: 'TK008', patient: 'Roberto Almeida', subject: 'Laudo de raio-X', priority: 'medium', status: 'done', date: '2026-04-14', category: 'Exame' },
             { id: 'TK009', patient: 'Maria Oliveira', subject: 'Check-up anual', priority: 'low', status: 'waiting', date: '2026-04-13', category: 'Consulta' },
         ];
-        let nextId = { patient: 9, appointment: 9, ticket: 10, doctor: 7 };
-        const statusLabels = { confirmed: { label: 'Confirmada', class: 'badge-success' }, pending: { label: 'Pendente', class: 'badge-warning' }, cancelled: { label: 'Cancelada', class: 'badge-danger' }, completed: { label: 'Concluída', class: 'badge-info' } };
-        const priorityLabels = { high: { label: 'Alta', class: 'badge-danger' }, medium: { label: 'Média', class: 'badge-warning' }, low: { label: 'Baixa', class: 'badge-success' } };
-        const ticketStatusLabels = { open: { label: 'Aberto', class: 'badge-info' }, progress: { label: 'Em Andamento', class: 'badge-warning' }, waiting: { label: 'Aguardando', class: 'badge-purple' }, done: { label: 'Concluído', class: 'badge-success' } };
 
-        // ===== CHATBOT CONFIG =====
-        const Chatbot = {
-            endpoint: '/api/chat', userId: `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`, provider: null,
-            init() { this.loadProvider(); this.bindEvents(); },
-            bindEvents() {
-                document.getElementById('chatbotInput')?.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); this.sendMessage(); } });
-                document.getElementById('chatbotInput')?.addEventListener('input', function () { this.style.height = 'auto'; this.style.height = Math.min(this.scrollHeight, 100) + 'px'; });
-            },
-            async loadProvider() {
-                try {
-                    const res = await fetch(`${this.endpoint}/providers`).catch(() => ({ json: () => ({ success: true, data: { current: 'mock', available: [{ id: 'mock', name: 'Modo Demo' }] } }) }));
-                    const data = await res.json();
-                    if (data.success) { this.provider = data.data.current; document.getElementById('chatbotProvider').textContent = data.data.available.find(p => p.id === this.provider)?.name || this.provider; }
-                } catch (e) { console.error('Erro provider:', e); }
-            },
-            async sendMessage(customMessage = null) {
-                const input = document.getElementById('chatbotInput'); const message = customMessage || input.value.trim(); if (!message) return;
-                this.addMessage(message, 'user'); input.value = ''; input.style.height = 'auto'; this.showTyping(true); input.disabled = true;
-                try {
-                    const res = await fetch(`${this.endpoint}/message`, { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-User-ID': this.userId }, body: JSON.stringify({ message, context: this.getContext(), provider: this.provider }) }).catch(() => ({ json: () => ({ success: true, data: { message: '🔧 *Modo Demo*: Backend não conectado. Configure o servidor Node.js para usar AI real.\n\nPara produção:\n1. `npm install` no backend\n2. Configure suas chaves no `.env`\n3. `npm run dev`\n\nEnquanto isso, posso ajudar com:\n- 📋 Explicar funcionalidades do sistema\n- 🎯 Dicas de uso do dashboard\n- ❓ Responder perguntas sobre o fluxo de trabalho', provider: 'Demo' } }) }));
-                    const data = await res.json();
-                    if (data.success) this.addMessage(data.data.message, 'bot', data.data.provider); else this.addMessage('❌ Erro ao processar. Tente novamente.', 'bot');
-                } catch (e) { console.error('Erro chat:', e); this.addMessage('❌ Erro de conexão.', 'bot'); }
-                finally { this.showTyping(false); input.disabled = false; input.focus(); }
-            },
-            addMessage(content, role, provider = null) {
-                const container = document.getElementById('chatbotMessages'); const msg = document.createElement('div'); msg.className = `chat-message ${role}`;
-                const avatar = role === 'bot' ? '🤖' : '👤'; const time = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-                msg.innerHTML = `<div class="message-avatar">${avatar}</div><div><div class="message-content">${this.formatMessage(content)}</div><div class="message-time">${time}${provider ? ` • ${provider}` : ''}</div></div>`;
-                container.appendChild(msg); container.scrollTop = container.scrollHeight;
-            },
-            formatMessage(t) { return t.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\*(.*?)\*/g, '<em>$1</em>').replace(/`(.*?)`/g, '<code>$1</code>').replace(/\n/g, '<br>'); },
-            showTyping(show) { const t = document.getElementById('chatbotTyping'); t.style.display = show ? 'flex' : 'none'; if (show) document.getElementById('chatbotMessages').scrollTop = 999999; },
-            getContext() { return { page: document.querySelector('.page-section.active')?.id?.replace('page-', ''), hospital: 'Hospital Central São Lucas', role: 'administrador', timestamp: new Date().toISOString() }; },
-            async clearChat() { if (!confirm('Limpar conversa?')) return; document.getElementById('chatbotMessages').innerHTML = `<div class="chat-message bot"><div class="message-content">✅ Conversa limpa! Como posso ajudar? 🏥</div></div>`; }
+        let nextId = { patient: 9, appointment: 9, ticket: 10, doctor: 7 };
+
+        const statusLabels = {
+            confirmed: { label: 'Confirmada', class: 'badge-success' },
+            pending: { label: 'Pendente', class: 'badge-warning' },
+            cancelled: { label: 'Cancelada', class: 'badge-danger' },
+            completed: { label: 'Concluída', class: 'badge-info' }
         };
 
-        // ===== NAVIGATION =====
+        const priorityLabels = {
+            high: { label: 'Alta', class: 'badge-danger' },
+            medium: { label: 'Média', class: 'badge-warning' },
+            low: { label: 'Baixa', class: 'badge-success' }
+        };
+
+        const ticketStatusLabels = {
+            open: { label: 'Aberto', class: 'badge-info' },
+            progress: { label: 'Em Andamento', class: 'badge-warning' },
+            waiting: { label: 'Aguardando', class: 'badge-purple' },
+            done: { label: 'Concluído', class: 'badge-success' }
+        };
+
+
+        // ===== CHATBOT SYSTEM (CORRIGIDO) =====
+        const Chatbot = {
+            endpoint: '/api/chat',
+            userId: `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+            currentProvider: null,
+            availableProviders: [],
+            initialized: false,
+
+            async init() {
+                if (this.initialized) return;
+                console.log('🤖 Inicializando Chatbot...');
+
+                // Aguarda DOM estar pronto
+                await this.waitForDOM();
+
+                try {
+                    await this.loadProviders();
+                    this.bindEvents();
+                    this.initialized = true;
+                    console.log('✅ Chatbot inicializado');
+                } catch (error) {
+                    console.error('❌ Erro ao inicializar:', error);
+                    this.setupFallback();
+                }
+            },
+
+            waitForDOM() {
+                return new Promise((resolve) => {
+                    if (document.getElementById('providerSelect')) {
+                        resolve();
+                    } else {
+                        let attempts = 0;
+                        const checkInterval = setInterval(() => {
+                            attempts++;
+                            if (document.getElementById('providerSelect') || attempts > 20) {
+                                clearInterval(checkInterval);
+                                resolve();
+                            }
+                        }, 100);
+                    }
+                });
+            },
+
+            async loadProviders() {
+                try {
+                    console.log('📡 Carregando providers...');
+                    const response = await fetch(`${this.endpoint}/providers`);
+
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+                    const data = await response.json();
+                    console.log('📦 Providers:', data);
+
+                    if (data.success && data.data) {
+                        this.availableProviders = data.data.available || [];
+                        this.currentProvider = data.data.current || (this.availableProviders[0]?.id || 'demo');
+                        this.updateProviderSelect();
+                        console.log(`✅ Provider atual: ${this.currentProvider}`);
+                    } else {
+                        throw new Error('Resposta inválida');
+                    }
+                } catch (error) {
+                    console.error('❌ Erro ao carregar providers:', error);
+                    this.setupFallback();
+                }
+            },
+
+            updateProviderSelect() {
+                const select = document.getElementById('providerSelect');
+                if (!select) {
+                    console.error('❌ providerSelect não encontrado');
+                    return;
+                }
+
+                select.innerHTML = '';
+
+                if (!this.availableProviders || this.availableProviders.length === 0) {
+                    const option = document.createElement('option');
+                    option.value = 'demo';
+                    option.textContent = '🔧 Modo Demo';
+                    option.selected = true;
+                    select.appendChild(option);
+                    this.currentProvider = 'demo';
+                    return;
+                }
+
+                this.availableProviders.forEach(provider => {
+                    const option = document.createElement('option');
+                    option.value = provider.id;
+                    const icons = {
+                        'openai': '🟢', 'nvidia': '🔵', 'deepseek': '🟡', 'qwen': '🔴',
+                        'gemini': '🟣', 'copilot': '🔷', 'google': '🔶', 'claude': '🟠', 'demo': '🔧'
+                    };
+                    const icon = icons[provider.id] || '•';
+                    option.textContent = `${icon} ${provider.name}`;
+                    if (provider.id === this.currentProvider) option.selected = true;
+                    select.appendChild(option);
+                });
+
+                // Atualiza label se existir
+                const label = document.getElementById('chatbotProvider');
+                if (label) {
+                    const current = this.availableProviders.find(p => p.id === this.currentProvider);
+                    label.textContent = current?.name || this.currentProvider;
+                }
+            },
+
+            setupFallback() {
+                this.availableProviders = [{ id: 'demo', name: 'Modo Demo', available: true }];
+                this.currentProvider = 'demo';
+                setTimeout(() => this.updateProviderSelect(), 100);
+
+                const label = document.getElementById('chatbotProvider');
+                if (label) label.textContent = 'Modo Demo';
+            },
+
+            bindEvents() {
+                const input = document.getElementById('chatbotInput');
+                if (input) {
+                    input.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                            e.preventDefault();
+                            this.sendMessage();
+                        }
+                    });
+                    input.addEventListener('input', function () {
+                        this.style.height = 'auto';
+                        this.style.height = Math.min(this.scrollHeight, 100) + 'px';
+                    });
+                }
+                console.log('✅ Eventos vinculados');
+            },
+
+            async handleProviderChange(newProvider) {
+                const select = document.getElementById('providerSelect');
+                if (!select || !newProvider || newProvider === this.currentProvider) return;
+
+                console.log(`🔄 Trocando para: ${newProvider}`);
+                select.disabled = true;
+
+                try {
+                    const response = await fetch(`${this.endpoint}/provider/switch`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ provider: newProvider })
+                    });
+                    const data = await response.json();
+
+                    if (data.success) {
+                        this.currentProvider = newProvider;
+                        const name = this.availableProviders.find(p => p.id === newProvider)?.name || newProvider;
+                        this.addMessage(`✅ **Provider alterado para:** ${name}`, 'bot');
+                        this.showToast(`Provider: ${name}`, 'success');
+                    } else {
+                        this.showToast('Erro: ' + data.error, 'error');
+                        this.updateProviderSelect();
+                    }
+                } catch (error) {
+                    console.error('❌ Erro na troca:', error);
+                    this.showToast('Erro de conexão', 'error');
+                    this.updateProviderSelect();
+                } finally {
+                    if (select) select.disabled = false;
+                }
+            },
+
+            async sendMessage(customMessage = null) {
+                const input = document.getElementById('chatbotInput');
+                const message = customMessage || input?.value.trim();
+                if (!message) return;
+
+                console.log('📤 Enviando:', message);
+                this.addMessage(message, 'user');
+
+                if (input) { input.value = ''; input.style.height = 'auto'; }
+                this.showTyping(true);
+                if (input) input.disabled = true;
+
+                try {
+                    const response = await fetch(`${this.endpoint}/message`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'X-User-ID': this.userId },
+                        body: JSON.stringify({
+                            message,
+                            context: this.getContext(),
+                            provider: this.currentProvider
+                        })
+                    });
+
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+                    const data = await response.json();
+                    if (data.success && data.data) {
+                        this.addMessage(data.data.message, 'bot', data.data.provider);
+                    } else {
+                        throw new Error(data.error || 'Resposta inválida');
+                    }
+                } catch (error) {
+                    console.error('❌ Erro:', error);
+                    this.addMessage('❌ Erro ao processar. Tente novamente.', 'bot');
+                } finally {
+                    this.showTyping(false);
+                    if (input) { input.disabled = false; input.focus(); }
+                }
+            },
+
+            addMessage(content, role, provider = null) {
+                const container = document.getElementById('chatbotMessages');
+                if (!container) return;
+
+                const msg = document.createElement('div');
+                msg.className = `chat-message ${role}`;
+                const avatar = role === 'bot' ? '🤖' : '👤';
+                const time = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+                msg.innerHTML = `
+                <div class="message-avatar">${avatar}</div>
+                <div>
+                    <div class="message-content">${this.formatMessage(content)}</div>
+                    <div class="message-time">${time}${provider ? ` • ${provider}` : ''}</div>
+                </div>
+            `;
+
+                container.appendChild(msg);
+                container.scrollTop = container.scrollHeight;
+            },
+
+            formatMessage(text) {
+                if (!text) return '';
+                return text
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                    .replace(/`(.*?)`/g, '<code>$1</code>')
+                    .replace(/\n/g, '<br>');
+            },
+
+            showTyping(show) {
+                const typing = document.getElementById('chatbotTyping');
+                if (!typing) return;
+                typing.style.display = show ? 'flex' : 'none';
+                if (show) {
+                    const container = document.getElementById('chatbotMessages');
+                    if (container) container.scrollTop = container.scrollHeight;
+                }
+            },
+
+            getContext() {
+                const active = document.querySelector('.page-section.active');
+                return {
+                    page: active ? active.id.replace('page-', '') : 'dashboard',
+                    hospital: 'Hospital Central São Lucas',
+                    role: 'administrador',
+                    timestamp: new Date().toISOString()
+                };
+            },
+
+            async clearChat() {
+                if (!confirm('Limpar conversa?')) return;
+                try {
+                    await fetch(`${this.endpoint}/history?userId=${this.userId}`, { method: 'DELETE' });
+                    const container = document.getElementById('chatbotMessages');
+                    if (container) {
+                        container.innerHTML = `<div class="chat-message bot"><div class="message-content">✅ Conversa limpa! Como posso ajudar? 🏥</div></div>`;
+                    }
+                } catch (error) {
+                    console.error('❌ Erro ao limpar:', error);
+                }
+            },
+
+            showToast(message, type = 'info') {
+                let container = document.getElementById('toastContainer');
+                if (!container) {
+                    container = document.createElement('div');
+                    container.id = 'toastContainer';
+                    container.className = 'toast-container';
+                    document.body.appendChild(container);
+                }
+
+                const toast = document.createElement('div');
+                toast.className = `toast toast-${type}`;
+                const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
+
+                toast.innerHTML = `<span class="toast-icon">${icons[type]}</span><span class="toast-message">${message}</span>`;
+                container.appendChild(toast);
+
+                setTimeout(() => {
+                    toast.classList.add('removing');
+                    setTimeout(() => toast.remove(), 300);
+                }, 3000);
+            }
+        };
+
+
+        // ===== FUNÇÕES GLOBAIS DE UI =====
+        function toggleChatbot() {
+            const panel = document.getElementById('chatbotPanel');
+            const overlay = document.getElementById('chatbotOverlay');
+            if (!panel || !overlay) return;
+
+            const isActive = panel.classList.contains('active');
+            panel.classList.toggle('active');
+            overlay.classList.toggle('active', !isActive);
+
+            if (!isActive) setTimeout(() => document.getElementById('chatbotInput')?.focus(), 300);
+        }
+
+        function handleChatKeydown(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                Chatbot.sendMessage();
+            }
+        }
+
+        function sendChatMessage() { Chatbot.sendMessage(); }
+        function clearChat() { Chatbot.clearChat(); }
+        function handleProviderChange(provider) { Chatbot.handleProviderChange(provider); }
+
+
+        // ===== NAVEGAÇÃO =====
         function navigateTo(page, el) {
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); if (el) el.classList.add('active');
-            document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active')); document.getElementById('page-' + page)?.classList.add('active');
-            const titles = { dashboard: ['Dashboard', 'Visão geral'], patients: ['Pacientes', 'Gerenciamento'], appointments: ['Consultas', 'Agendamento'], tickets: ['Atendimentos', 'Gestão'], doctors: ['Médicos', 'Equipe'], reports: ['Relatórios', 'Métricas'], settings: ['Configurações', 'Sistema'] };
-            document.getElementById('pageTitle').textContent = titles[page]?.[0] || 'Dashboard'; document.getElementById('pageSubtitle').textContent = titles[page]?.[1] || '';
-            if (window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('mobile-open');
-            if (page === 'patients') renderPatients(); if (page === 'appointments') renderAppointments(); if (page === 'tickets') renderTickets(); if (page === 'doctors') renderDoctors();
-        }
-        function toggleSidebar() { const s = document.getElementById('sidebar'); if (window.innerWidth <= 768) s.classList.toggle('mobile-open'); else s.classList.toggle('collapsed'); }
-        function openModal(id) { document.getElementById(id).classList.add('active'); populateSelects(); }
-        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
-        document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', e => { if (e.target === o) o.classList.remove('active'); }));
-        function toggleNotifications() { document.getElementById('notificationPanel').classList.toggle('active'); }
-        function clearNotifications() { document.getElementById('notificationList').innerHTML = `<div class="empty-state" style="padding:30px;"><div class="empty-state-icon">🔔</div><h3>Sem notificações</h3><p>Todas foram lidas</p></div>`; }
-        function toggleFullscreen() { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
-        function toggleChatbot() { const p = document.getElementById('chatbotPanel'), o = document.getElementById('chatbotOverlay'); p.classList.toggle('active'); o.classList.toggle('active', p.classList.contains('active')); if (p.classList.contains('active')) document.getElementById('chatbotInput')?.focus(); }
-        function showToast(msg, type = 'success') { const c = document.getElementById('toastContainer'), icons = { success: '✅', error: '❌', info: 'ℹ️' }, t = document.createElement('div'); t.className = `toast toast-${type}`; t.innerHTML = `<span class="toast-icon">${icons[type]}</span><span class="toast-message">${msg}</span>`; c.appendChild(t); setTimeout(() => { t.classList.add('removing'); setTimeout(() => t.remove(), 300); }, 3000); }
-        function formatDate(d) { if (!d) return '-'; const [y, m, dt] = d.split('-'); return `${dt}/${m}/${y}`; }
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            if (el) el.classList.add('active');
 
-        // ===== RENDER FUNCTIONS =====
+            document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+            document.getElementById('page-' + page)?.classList.add('active');
+
+            const titles = {
+                dashboard: ['Dashboard', 'Visão geral'],
+                patients: ['Pacientes', 'Gerenciamento'],
+                appointments: ['Consultas', 'Agendamento'],
+                tickets: ['Atendimentos', 'Gestão'],
+                doctors: ['Médicos', 'Equipe'],
+                reports: ['Relatórios', 'Métricas'],
+                settings: ['Configurações', 'Sistema']
+            };
+
+            document.getElementById('pageTitle').textContent = titles[page]?.[0] || 'Dashboard';
+            document.getElementById('pageSubtitle').textContent = titles[page]?.[1] || '';
+
+            if (window.innerWidth <= 768) document.getElementById('sidebar')?.classList.remove('mobile-open');
+
+            // Recarrega dados da página
+            if (page === 'patients') renderPatients();
+            if (page === 'appointments') renderAppointments();
+            if (page === 'tickets') renderTickets();
+            if (page === 'doctors') renderDoctors();
+        }
+
+        function toggleSidebar() {
+            const s = document.getElementById('sidebar');
+            if (!s) return;
+            if (window.innerWidth <= 768) s.classList.toggle('mobile-open');
+            else s.classList.toggle('collapsed');
+        }
+
+        function openModal(id) {
+            document.getElementById(id)?.classList.add('active');
+            populateSelects();
+        }
+
+        function closeModal(id) {
+            document.getElementById(id)?.classList.remove('active');
+        }
+
+        // Fecha modal ao clicar fora
+        document.querySelectorAll('.modal-overlay').forEach(o => {
+            o.addEventListener('click', e => { if (e.target === o) o.classList.remove('active'); });
+        });
+
+        function toggleNotifications() {
+            document.getElementById('notificationPanel')?.classList.toggle('active');
+        }
+
+        function clearNotifications() {
+            const list = document.getElementById('notificationList');
+            if (list) {
+                list.innerHTML = `<div class="empty-state" style="padding:30px;"><div class="empty-state-icon">🔔</div><h3>Sem notificações</h3><p>Todas foram lidas</p></div>`;
+            }
+        }
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) document.documentElement.requestFullscreen?.();
+            else document.exitFullscreen?.();
+        }
+
+        function showToast(msg, type = 'success') {
+            const c = document.getElementById('toastContainer');
+            if (!c) return;
+            const icons = { success: '✅', error: '❌', info: 'ℹ️' };
+            const t = document.createElement('div');
+            t.className = `toast toast-${type}`;
+            t.innerHTML = `<span class="toast-icon">${icons[type]}</span><span class="toast-message">${msg}</span>`;
+            c.appendChild(t);
+            setTimeout(() => { t.classList.add('removing'); setTimeout(() => t.remove(), 300); }, 3000);
+        }
+
+        function formatDate(d) {
+            if (!d) return '-';
+            const [y, m, dt] = d.split('-');
+            return `${dt}/${m}/${y}`;
+        }
+
+
+        // ===== RENDER: PACIENTES =====
         function renderPatients(filter = 'all') {
-            const tbody = document.getElementById('patientsTableBody'); let f = patients; if (filter !== 'all') f = patients.filter(p => p.status === filter);
+            const tbody = document.getElementById('patientsTableBody');
+            if (!tbody) return;
+
+            let f = patients;
+            if (filter !== 'all') f = patients.filter(p => p.status === filter);
+
             tbody.innerHTML = f.map((p, i) => {
-                const color = avatarColors[i % avatarColors.length], initials = p.name.split(' ').map(n => n[0]).join('').substring(0, 2), sc = p.status === 'active' ? 'badge-success' : p.status === 'emergency' ? 'badge-danger' : 'badge-info', st = p.status === 'active' ? 'Ativo' : p.status === 'emergency' ? 'Emergência' : 'Inativo';
-                return `<tr><td><div class="patient-cell"><div class="patient-avatar" style="background:${color};">${initials}</div><div><div class="patient-name">${p.name}</div><div class="patient-id">${p.id}</div></div></div></td><td>${p.cpf}</td><td>${p.age} anos</td><td>${p.insurance}</td><td>${formatDate(p.lastVisit)}</td><td><span class="badge ${sc}"><span class="badge-dot"></span>${st}</span></td><td><button class="btn btn-sm btn-outline" onclick="viewPatient('${p.id}')">👁️ Ver</button><button class="btn btn-sm btn-outline" onclick="deletePatient('${p.id}')" style="color:var(--accent);">🗑️</button></td></tr>`;
+                const color = avatarColors[i % avatarColors.length];
+                const initials = p.name.split(' ').map(n => n[0]).join('').substring(0, 2);
+                const sc = p.status === 'active' ? 'badge-success' : p.status === 'emergency' ? 'badge-danger' : 'badge-info';
+                const st = p.status === 'active' ? 'Ativo' : p.status === 'emergency' ? 'Emergência' : 'Inativo';
+
+                return `<tr>
+                <td><div class="patient-cell">
+                    <div class="patient-avatar" style="background:${color};">${initials}</div>
+                    <div><div class="patient-name">${p.name}</div><div class="patient-id">${p.id}</div></div>
+                </div></td>
+                <td>${p.cpf}</td><td>${p.age} anos</td><td>${p.insurance}</td>
+                <td>${formatDate(p.lastVisit)}</td>
+                <td><span class="badge ${sc}"><span class="badge-dot"></span>${st}</span></td>
+                <td>
+                    <button class="btn btn-sm btn-outline" onclick="viewPatient('${p.id}')">👁️ Ver</button>
+                    <button class="btn btn-sm btn-outline" onclick="deletePatient('${p.id}')" style="color:var(--accent);">🗑️</button>
+                </td>
+            </tr>`;
             }).join('');
         }
-        function filterPatients(f, el) { document.querySelectorAll('#page-patients .filter-chip').forEach(c => c.classList.remove('active')); el.classList.add('active'); renderPatients(f); }
+
+        function filterPatients(f, el) {
+            document.querySelectorAll('#page-patients .filter-chip').forEach(c => c.classList.remove('active'));
+            el?.classList.add('active');
+            renderPatients(f);
+        }
+
         function addPatient() {
-            const name = document.getElementById('patientName').value.trim(), cpf = document.getElementById('patientCPF').value.trim(), birth = document.getElementById('patientBirth').value, phone = document.getElementById('patientPhone').value.trim(), insurance = document.getElementById('patientInsurance').value, blood = document.getElementById('patientBlood').value;
+            const name = document.getElementById('patientName')?.value.trim();
+            const cpf = document.getElementById('patientCPF')?.value.trim();
+            const birth = document.getElementById('patientBirth')?.value;
+            const phone = document.getElementById('patientPhone')?.value.trim();
+            const insurance = document.getElementById('patientInsurance')?.value;
+            const blood = document.getElementById('patientBlood')?.value;
+
             if (!name || !cpf) { showToast('Preencha nome e CPF!', 'error'); return; }
+
             const age = birth ? Math.floor((Date.now() - new Date(birth)) / 31557600000) : 0;
-            patients.push({ id: 'P' + String(nextId.patient++).padStart(3, '0'), name, cpf, birth, age, phone, insurance, blood, status: 'active', lastVisit: new Date().toISOString().split('T')[0] });
-            closeModal('patientModal'); renderPatients(); showToast(`Paciente ${name} cadastrado!`, 'success'); document.getElementById('statPatients').textContent = patients.length.toLocaleString('pt-BR');
-            ['patientName', 'patientCPF', 'patientBirth', 'patientPhone'].forEach(id => document.getElementById(id).value = '');
-        }
-        function deletePatient(id) { const p = patients.find(x => x.id === id); if (confirm(`Excluir ${p.name}?`)) { patients = patients.filter(x => x.id !== id); renderPatients(); showToast(`${p.name} removido.`, 'info'); } }
-        function viewPatient(id) { const p = patients.find(x => x.id === id); alert(`📋 ${p.name}\nCPF: ${p.cpf}\nIdade: ${p.age}\nTelefone: ${p.phone}\nConvênio: ${p.insurance}\nTipo: ${p.blood}\nÚltima: ${formatDate(p.lastVisit)}`); }
 
-        function renderAppointments(filter = 'all') {
-            const tbody = document.getElementById('appointmentsTableBody'), sched = document.getElementById('dailySchedule'); let f = [...appointments], today = '2026-04-18';
-            if (filter === 'today') f = f.filter(a => a.date === today); if (filter === 'week') f = f.filter(a => a.date >= today && a.date <= '2026-04-24'); if (filter === 'month') f = f.filter(a => a.date.startsWith('2026-04'));
-            tbody.innerHTML = f.map(a => { const st = statusLabels[a.status]; return `<tr><td><strong>${formatDate(a.date)}</strong><br><span style="color:var(--text-muted);font-size:12px;">${a.time}</span></td><td><strong>${a.patient}</strong></td><td>${a.doctor}</td><td>${a.specialty}</td><td><span class="badge ${st.class}"><span class="badge-dot"></span>${st.label}</span></td><td>${a.status === 'pending' ? `<button class="btn btn-sm btn-success" onclick="confirmAppointment('${a.id}')">✅ Confirmar</button>` : ''}${a.status !== 'cancelled' ? `<button class="btn btn-sm btn-outline" onclick="cancelAppointment('${a.id}')" style="color:var(--accent);">Cancelar</button>` : ''}</td></tr>`; }).join('');
-            const todayA = appointments.filter(a => a.date === today && a.status !== 'cancelled').sort((a, b) => a.time.localeCompare(b.time));
-            sched.innerHTML = todayA.length ? todayA.map(a => `<div class="schedule-item"><div class="schedule-time">${a.time}</div><div class="schedule-info"><h4>${a.patient}</h4><p>${a.doctor} • ${a.specialty}</p></div><span class="badge ${statusLabels[a.status].class}" style="font-size:11px;">${statusLabels[a.status].label}</span></div>`).join('') : '<div class="empty-state"><p>Nenhuma consulta hoje</p></div>';
-        }
-        function filterAppointments(f, el) { document.querySelectorAll('#page-appointments .filter-chip').forEach(c => c.classList.remove('active')); el.classList.add('active'); renderAppointments(f); }
-        function addAppointment() {
-            const patient = document.getElementById('apptPatient').value, doctor = document.getElementById('apptDoctor').value, date = document.getElementById('apptDate').value, time = document.getElementById('apptTime').value, specialty = document.getElementById('apptSpecialty').value;
-            if (!patient || !doctor || !date || !time) { showToast('Preencha campos obrigatórios!', 'error'); return; }
-            appointments.push({ id: 'A' + String(nextId.appointment++).padStart(3, '0'), patient, doctor, specialty, date, time, status: 'pending' });
-            closeModal('appointmentModal'); renderAppointments(); renderUpcomingAppointments(); showToast('Consulta agendada!', 'success');
-        }
-        function confirmAppointment(id) { const a = appointments.find(x => x.id === id); if (a) { a.status = 'confirmed'; renderAppointments(); renderUpcomingAppointments(); showToast('Confirmada!', 'success'); } }
-        function cancelAppointment(id) { const a = appointments.find(x => x.id === id); if (a && confirm('Cancelar?')) { a.status = 'cancelled'; renderAppointments(); renderUpcomingAppointments(); showToast('Cancelada.', 'info'); } }
-        function renderUpcomingAppointments() {
-            const tbody = document.getElementById('upcomingAppointments'), up = appointments.filter(a => a.status !== 'cancelled').sort((a, b) => new Date(a.date + 'T' + a.time) - new Date(b.date + 'T' + b.time)).slice(0, 5);
-            tbody.innerHTML = up.map((a, i) => {
-                const color = avatarColors[i % avatarColors.length], initials = a.patient.split(' ').map(n => n[0]).join('').substring(0, 2), st = statusLabels[a.status];
-                return `<tr><td><div class="patient-cell"><div class="patient-avatar" style="background:${color};">${initials}</div><div><div class="patient-name">${a.patient}</div></div></div></td><td>${a.specialty}</td><td>${a.doctor}</td><td>${formatDate(a.date)} ${a.time}</td><td><span class="badge ${st.class}"><span class="badge-dot"></span>${st.label}</span></td></tr>`;
-            }).join('');
-        }
+            patients.push({
+                id: 'P' + String(nextId.patient++).padStart(3, '0'),
+                name, cpf, birth, age, phone, insurance, blood,
+                status: 'active',
+                lastVisit: new Date().toISOString().split('T')[0]
+            });
 
-        function renderTickets(view = 'kanban') {
-            if (view === 'kanban') { document.getElementById('ticketsKanban').style.display = 'block'; document.getElementById('ticketsList').style.display = 'none'; renderKanban(); }
-            else { document.getElementById('ticketsKanban').style.display = 'none'; document.getElementById('ticketsList').style.display = 'block'; renderTicketsTable(); }
-        }
-        function filterTickets(v, el) { document.querySelectorAll('#page-tickets .filter-chip').forEach(c => c.classList.remove('active')); el.classList.add('active'); renderTickets(v); }
-        function renderKanban() {
-            const cols = { open: [], progress: [], waiting: [], done: [] }; tickets.forEach(t => { if (cols[t.status]) cols[t.status].push(t); });
-            Object.keys(cols).forEach(key => {
-                const container = document.getElementById('kanban' + key.charAt(0).toUpperCase() + key.slice(1)); document.getElementById('count' + key.charAt(0).toUpperCase() + key.slice(1)).textContent = cols[key].length;
-                container.innerHTML = cols[key].map(t => { const pr = priorityLabels[t.priority]; return `<div class="kanban-card"><div class="kanban-card-title">${t.subject}</div><div class="kanban-card-meta">${t.patient} • ${t.category}</div><div style="margin-top:8px;display:flex;justify-content:space-between;align-items:center;"><span class="badge ${pr.class}" style="font-size:11px;">${pr.label}</span><span style="font-size:11px;color:var(--text-muted);">${t.id}</span></div><div style="margin-top:8px;display:flex;gap:4px;">${t.status !== 'progress' ? `<button class="btn btn-sm btn-outline" onclick="moveTicket('${t.id}','progress')">▶️</button>` : ''}${t.status !== 'waiting' ? `<button class="btn btn-sm btn-outline" onclick="moveTicket('${t.id}','waiting')">⏸️</button>` : ''}${t.status !== 'done' ? `<button class="btn btn-sm btn-outline" onclick="moveTicket('${t.id}','done')" style="color:var(--secondary);">✅</button>` : ''}</div></div>`; }).join('');
+            closeModal('patientModal');
+            renderPatients();
+            showToast(`Paciente ${name} cadastrado!`, 'success');
+            document.getElementById('statPatients').textContent = patients.length.toLocaleString('pt-BR');
+
+            ['patientName', 'patientCPF', 'patientBirth', 'patientPhone'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.value = '';
             });
         }
+
+        function deletePatient(id) {
+            const p = patients.find(x => x.id === id);
+            if (p && confirm(`Excluir ${p.name}?`)) {
+                patients = patients.filter(x => x.id !== id);
+                renderPatients();
+                showToast(`${p.name} removido.`, 'info');
+            }
+        }
+
+        function viewPatient(id) {
+            const p = patients.find(x => x.id === id);
+            if (p) {
+                alert(`📋 ${p.name}\nCPF: ${p.cpf}\nIdade: ${p.age}\nTelefone: ${p.phone}\nConvênio: ${p.insurance}\nTipo: ${p.blood}\nÚltima: ${formatDate(p.lastVisit)}`);
+            }
+        }
+
+
+        // ===== RENDER: CONSULTAS =====
+        function renderAppointments(filter = 'all') {
+            const tbody = document.getElementById('appointmentsTableBody');
+            const sched = document.getElementById('dailySchedule');
+            if (!tbody) return;
+
+            let f = [...appointments];
+            const today = '2026-04-18';
+
+            if (filter === 'today') f = f.filter(a => a.date === today);
+            if (filter === 'week') f = f.filter(a => a.date >= today && a.date <= '2026-04-24');
+            if (filter === 'month') f = f.filter(a => a.date.startsWith('2026-04'));
+
+            tbody.innerHTML = f.map(a => {
+                const st = statusLabels[a.status];
+                return `<tr>
+                <td><strong>${formatDate(a.date)}</strong><br><span style="color:var(--text-muted);font-size:12px;">${a.time}</span></td>
+                <td><strong>${a.patient}</strong></td><td>${a.doctor}</td><td>${a.specialty}</td>
+                <td><span class="badge ${st.class}"><span class="badge-dot"></span>${st.label}</span></td>
+                <td>
+                    ${a.status === 'pending' ? `<button class="btn btn-sm btn-success" onclick="confirmAppointment('${a.id}')">✅ Confirmar</button>` : ''}
+                    ${a.status !== 'cancelled' ? `<button class="btn btn-sm btn-outline" onclick="cancelAppointment('${a.id}')" style="color:var(--accent);">Cancelar</button>` : ''}
+                </td>
+            </tr>`;
+            }).join('');
+
+            // Agenda do dia
+            if (sched) {
+                const todayA = appointments.filter(a => a.date === today && a.status !== 'cancelled').sort((a, b) => a.time.localeCompare(b.time));
+                sched.innerHTML = todayA.length ? todayA.map(a => `
+                <div class="schedule-item">
+                    <div class="schedule-time">${a.time}</div>
+                    <div class="schedule-info"><h4>${a.patient}</h4><p>${a.doctor} • ${a.specialty}</p></div>
+                    <span class="badge ${statusLabels[a.status].class}" style="font-size:11px;">${statusLabels[a.status].label}</span>
+                </div>
+            `).join('') : '<div class="empty-state"><p>Nenhuma consulta hoje</p></div>';
+            }
+        }
+
+        function filterAppointments(f, el) {
+            document.querySelectorAll('#page-appointments .filter-chip').forEach(c => c.classList.remove('active'));
+            el?.classList.add('active');
+            renderAppointments(f);
+        }
+
+        function addAppointment() {
+            const patient = document.getElementById('apptPatient')?.value;
+            const doctor = document.getElementById('apptDoctor')?.value;
+            const date = document.getElementById('apptDate')?.value;
+            const time = document.getElementById('apptTime')?.value;
+            const specialty = document.getElementById('apptSpecialty')?.value;
+
+            if (!patient || !doctor || !date || !time) { showToast('Preencha campos obrigatórios!', 'error'); return; }
+
+            appointments.push({
+                id: 'A' + String(nextId.appointment++).padStart(3, '0'),
+                patient, doctor, specialty, date, time, status: 'pending'
+            });
+
+            closeModal('appointmentModal');
+            renderAppointments();
+            renderUpcomingAppointments();
+            showToast('Consulta agendada!', 'success');
+        }
+
+        function confirmAppointment(id) {
+            const a = appointments.find(x => x.id === id);
+            if (a) {
+                a.status = 'confirmed';
+                renderAppointments();
+                renderUpcomingAppointments();
+                showToast('Confirmada!', 'success');
+            }
+        }
+
+        function cancelAppointment(id) {
+            const a = appointments.find(x => x.id === id);
+            if (a && confirm('Cancelar?')) {
+                a.status = 'cancelled';
+                renderAppointments();
+                renderUpcomingAppointments();
+                showToast('Cancelada.', 'info');
+            }
+        }
+
+        function renderUpcomingAppointments() {
+            const tbody = document.getElementById('upcomingAppointments');
+            if (!tbody) return;
+
+            const up = appointments.filter(a => a.status !== 'cancelled')
+                .sort((a, b) => new Date(a.date + 'T' + a.time) - new Date(b.date + 'T' + b.time))
+                .slice(0, 5);
+
+            tbody.innerHTML = up.map((a, i) => {
+                const color = avatarColors[i % avatarColors.length];
+                const initials = a.patient.split(' ').map(n => n[0]).join('').substring(0, 2);
+                const st = statusLabels[a.status];
+                return `<tr>
+                <td><div class="patient-cell">
+                    <div class="patient-avatar" style="background:${color};">${initials}</div>
+                    <div><div class="patient-name">${a.patient}</div></div>
+                </div></td>
+                <td>${a.specialty}</td><td>${a.doctor}</td>
+                <td>${formatDate(a.date)} ${a.time}</td>
+                <td><span class="badge ${st.class}"><span class="badge-dot"></span>${st.label}</span></td>
+            </tr>`;
+            }).join('');
+        }
+
+
+        // ===== RENDER: ATENDIMENTOS (TICKETS) =====
+        function renderTickets(view = 'kanban') {
+            if (view === 'kanban') {
+                document.getElementById('ticketsKanban')?.style.setProperty('display', 'grid');
+                document.getElementById('ticketsList')?.style.setProperty('display', 'none');
+                renderKanban();
+            } else {
+                document.getElementById('ticketsKanban')?.style.setProperty('display', 'none');
+                document.getElementById('ticketsList')?.style.setProperty('display', 'block');
+                renderTicketsTable();
+            }
+        }
+
+        function filterTickets(v, el) {
+            document.querySelectorAll('#page-tickets .filter-chip').forEach(c => c.classList.remove('active'));
+            el?.classList.add('active');
+            renderTickets(v);
+        }
+
+        function renderKanban() {
+            const cols = { open: [], progress: [], waiting: [], done: [] };
+            tickets.forEach(t => { if (cols[t.status]) cols[t.status].push(t); });
+
+            Object.keys(cols).forEach(key => {
+                const container = document.getElementById('kanban' + key.charAt(0).toUpperCase() + key.slice(1));
+                const counter = document.getElementById('count' + key.charAt(0).toUpperCase() + key.slice(1));
+                if (!container) return;
+
+                if (counter) counter.textContent = cols[key].length;
+
+                container.innerHTML = cols[key].map(t => {
+                    const pr = priorityLabels[t.priority];
+                    return `<div class="kanban-card">
+                    <div class="kanban-card-title">${t.subject}</div>
+                    <div class="kanban-card-meta">${t.patient} • ${t.category}</div>
+                    <div style="margin-top:8px;display:flex;justify-content:space-between;align-items:center;">
+                        <span class="badge ${pr.class}" style="font-size:11px;">${pr.label}</span>
+                        <span style="font-size:11px;color:var(--text-muted);">${t.id}</span>
+                    </div>
+                    <div style="margin-top:8px;display:flex;gap:4px;">
+                        ${t.status !== 'progress' ? `<button class="btn btn-sm btn-outline" onclick="moveTicket('${t.id}','progress')">▶️</button>` : ''}
+                        ${t.status !== 'waiting' ? `<button class="btn btn-sm btn-outline" onclick="moveTicket('${t.id}','waiting')">⏸️</button>` : ''}
+                        ${t.status !== 'done' ? `<button class="btn btn-sm btn-outline" onclick="moveTicket('${t.id}','done')" style="color:var(--secondary);">✅</button>` : ''}
+                    </div>
+                </div>`;
+                }).join('');
+            });
+        }
+
         function renderTicketsTable() {
             const tbody = document.getElementById('ticketsTableBody');
+            if (!tbody) return;
+
             tbody.innerHTML = tickets.map(t => {
-                const pr = priorityLabels[t.priority], st = ticketStatusLabels[t.status];
-                return `<tr><td><strong>${t.id}</strong></td><td>${t.patient}</td><td>${t.subject}</td><td><span class="badge ${pr.class}"><span class="badge-dot"></span>${pr.label}</span></td><td><span class="badge ${st.class}"><span class="badge-dot"></span>${st.label}</span></td><td>${formatDate(t.date)}</td><td><button class="btn btn-sm btn-outline" onclick="viewTicket('${t.id}')">👁️</button><button class="btn btn-sm btn-outline" onclick="deleteTicket('${t.id}')" style="color:var(--accent);">🗑️</button></td></tr>`;
+                const pr = priorityLabels[t.priority];
+                const st = ticketStatusLabels[t.status];
+                return `<tr>
+                <td><strong>${t.id}</strong></td><td>${t.patient}</td><td>${t.subject}</td>
+                <td><span class="badge ${pr.class}"><span class="badge-dot"></span>${pr.label}</span></td>
+                <td><span class="badge ${st.class}"><span class="badge-dot"></span>${st.label}</span></td>
+                <td>${formatDate(t.date)}</td>
+                <td>
+                    <button class="btn btn-sm btn-outline" onclick="viewTicket('${t.id}')">👁️</button>
+                    <button class="btn btn-sm btn-outline" onclick="deleteTicket('${t.id}')" style="color:var(--accent);">🗑️</button>
+                </td>
+            </tr>`;
             }).join('');
         }
-        function addTicket() {
-            const patient = document.getElementById('ticketPatient').value, subject = document.getElementById('ticketSubject').value.trim(), priority = document.getElementById('ticketPriority').value, category = document.getElementById('ticketCategory').value;
-            if (!patient || !subject) { showToast('Preencha paciente e assunto!', 'error'); return; }
-            tickets.push({ id: 'TK' + String(nextId.ticket++).padStart(3, '0'), patient, subject, priority, status: 'open', date: new Date().toISOString().split('T')[0], category });
-            closeModal('ticketModal'); renderTickets(); showToast('Atendimento criado!', 'success');
-        }
-        function moveTicket(id, ns) { const t = tickets.find(x => x.id === id); if (t) { t.status = ns; renderTickets(document.getElementById('ticketsKanban').style.display !== 'none' ? 'kanban' : 'list'); showToast(`${id} → ${{ progress: 'Em Andamento', waiting: 'Aguardando', done: 'Concluído' }[ns]}`, 'info'); } }
-        function deleteTicket(id) { if (confirm('Excluir?')) { tickets = tickets.filter(t => t.id !== id); renderTickets(); showToast('Removido.', 'info'); } }
-        function viewTicket(id) { const t = tickets.find(x => x.id === id); alert(`🎫 ${t.id}\nPaciente: ${t.patient}\nAssunto: ${t.subject}\nPrioridade: ${priorityLabels[t.priority].label}\nCategoria: ${t.category}\nData: ${formatDate(t.date)}\nStatus: ${ticketStatusLabels[t.status].label}`); }
 
+        function addTicket() {
+            const patient = document.getElementById('ticketPatient')?.value;
+            const subject = document.getElementById('ticketSubject')?.value.trim();
+            const priority = document.getElementById('ticketPriority')?.value;
+            const category = document.getElementById('ticketCategory')?.value;
+
+            if (!patient || !subject) { showToast('Preencha paciente e assunto!', 'error'); return; }
+
+            tickets.push({
+                id: 'TK' + String(nextId.ticket++).padStart(3, '0'),
+                patient, subject, priority, status: 'open',
+                date: new Date().toISOString().split('T')[0],
+                category
+            });
+
+            closeModal('ticketModal');
+            renderTickets();
+            showToast('Atendimento criado!', 'success');
+        }
+
+        function moveTicket(id, ns) {
+            const t = tickets.find(x => x.id === id);
+            if (t) {
+                t.status = ns;
+                renderTickets(document.getElementById('ticketsKanban')?.style.display !== 'none' ? 'kanban' : 'list');
+                const names = { progress: 'Em Andamento', waiting: 'Aguardando', done: 'Concluído' };
+                showToast(`${id} → ${names[ns]}`, 'info');
+            }
+        }
+
+        function deleteTicket(id) {
+            if (confirm('Excluir?')) {
+                tickets = tickets.filter(t => t.id !== id);
+                renderTickets();
+                showToast('Removido.', 'info');
+            }
+        }
+
+        function viewTicket(id) {
+            const t = tickets.find(x => x.id === id);
+            if (t) {
+                alert(`🎫 ${t.id}\nPaciente: ${t.patient}\nAssunto: ${t.subject}\nPrioridade: ${priorityLabels[t.priority].label}\nCategoria: ${t.category}\nData: ${formatDate(t.date)}\nStatus: ${ticketStatusLabels[t.status].label}`);
+            }
+        }
+
+
+        // ===== RENDER: MÉDICOS =====
         function renderDoctors() {
             const grid = document.getElementById('doctorsGrid');
+            if (!grid) return;
+
             grid.innerHTML = doctors.map((d, i) => {
                 const initials = d.name.replace('Dr. ', '').replace('Dra. ', '').split(' ').map(n => n[0]).join('').substring(0, 2);
-                return `<div class="doctor-card"><div class="doctor-avatar-lg" style="background:${d.color};">${initials}</div><div class="doctor-name">${d.name}</div><div class="doctor-specialty">${d.specialty}</div><div style="margin-bottom:12px;"><span style="font-size:12px;color:var(--text-muted);">⭐ ${d.rating} • ${d.patients} pacientes</span></div><div class="doctor-stats"><div class="doctor-stat"><div class="doctor-stat-value">${d.patients}</div><div class="doctor-stat-label">Pacientes</div></div><div class="doctor-stat"><div class="doctor-stat-value">${d.rating}</div><div class="doctor-stat-label">Avaliação</div></div><div class="doctor-stat"><div class="doctor-stat-value">${Math.floor(d.patients / 12)}</div><div class="doctor-stat-label">Consultas/mês</div></div></div></div>`;
+                return `<div class="doctor-card">
+                <div class="doctor-avatar-lg" style="background:${d.color};">${initials}</div>
+                <div class="doctor-name">${d.name}</div>
+                <div class="doctor-specialty">${d.specialty}</div>
+                <div style="margin-bottom:12px;"><span style="font-size:12px;color:var(--text-muted);">⭐ ${d.rating} • ${d.patients} pacientes</span></div>
+                <div class="doctor-stats">
+                    <div class="doctor-stat"><div class="doctor-stat-value">${d.patients}</div><div class="doctor-stat-label">Pacientes</div></div>
+                    <div class="doctor-stat"><div class="doctor-stat-value">${d.rating}</div><div class="doctor-stat-label">Avaliação</div></div>
+                    <div class="doctor-stat"><div class="doctor-stat-value">${Math.floor(d.patients / 12)}</div><div class="doctor-stat-label">Consultas/mês</div></div>
+                </div>
+            </div>`;
             }).join('');
         }
+
         function addDoctor() {
-            const name = document.getElementById('doctorName').value.trim(), crm = document.getElementById('doctorCRM').value.trim(), specialty = document.getElementById('doctorSpecialty').value, phone = document.getElementById('doctorPhone').value.trim(), email = document.getElementById('doctorEmail').value.trim();
+            const name = document.getElementById('doctorName')?.value.trim();
+            const crm = document.getElementById('doctorCRM')?.value.trim();
+            const specialty = document.getElementById('doctorSpecialty')?.value;
+            const phone = document.getElementById('doctorPhone')?.value.trim();
+            const email = document.getElementById('doctorEmail')?.value.trim();
+
             if (!name || !crm) { showToast('Preencha nome e CRM!', 'error'); return; }
+
             const prefix = name.toLowerCase().includes('dra') ? 'Dra. ' : 'Dr. ';
-            doctors.push({ id: 'D' + String(nextId.doctor++).padStart(3, '0'), name: prefix + name.replace('Dr. ', '').replace('Dra. ', ''), crm, specialty, phone, email, patients: 0, rating: 5.0, color: avatarColors[doctors.length % avatarColors.length] });
-            closeModal('doctorModal'); renderDoctors(); showToast(`Médico ${name} cadastrado!`, 'success');
+            doctors.push({
+                id: 'D' + String(nextId.doctor++).padStart(3, '0'),
+                name: prefix + name.replace('Dr. ', '').replace('Dra. ', ''),
+                crm, specialty, phone, email,
+                patients: 0, rating: 5.0,
+                color: avatarColors[doctors.length % avatarColors.length]
+            });
+
+            closeModal('doctorModal');
+            renderDoctors();
+            showToast(`Médico ${name} cadastrado!`, 'success');
         }
 
+
+        // ===== RENDER: ATIVIDADE =====
         function renderActivityFeed() {
-            const feed = document.getElementById('activityFeed'), acts = [
+            const feed = document.getElementById('activityFeed');
+            if (!feed) return;
+
+            const acts = [
                 { dot: 'green', text: '<strong>Consulta confirmada</strong> — Maria Oliveira com Dr. Ricardo Silva', time: 'Há 10 min' },
                 { dot: 'blue', text: '<strong>Novo paciente</strong> — Pedro Mendes (P008)', time: 'Há 25 min' },
                 { dot: 'orange', text: '<strong>Atendimento pendente</strong> — TK002: Resultado de exames', time: 'Há 1 hora' },
                 { dot: 'red', text: '<strong>Emergência</strong> — Carlos Pereira necessita atendimento', time: 'Há 2 horas' },
                 { dot: 'green', text: '<strong>Concluído</strong> — Fernanda Lima - Dermatologia', time: 'Há 3 horas' },
             ];
-            feed.innerHTML = acts.map(a => `<div class="activity-item"><div class="activity-dot ${a.dot}"></div><div><div class="activity-text">${a.text}</div><div class="activity-time">${a.time}</div></div></div>`).join('');
+
+            feed.innerHTML = acts.map(a => `
+            <div class="activity-item">
+                <div class="activity-dot ${a.dot}"></div>
+                <div><div class="activity-text">${a.text}</div><div class="activity-time">${a.time}</div></div>
+            </div>
+        `).join('');
         }
 
-        // ===== CHARTS (Canvas simples) =====
+
+        // ===== GRÁFICOS (Canvas) =====
         function drawChart(id, type, data, labels, colors) {
-            const canvas = document.getElementById(id); if (!canvas) return;
-            const ctx = canvas.getContext('2d'), container = canvas.parentElement;
-            canvas.width = container.clientWidth; canvas.height = container.clientHeight;
-            const w = canvas.width, h = canvas.height, pad = { t: 20, r: 20, b: 40, l: 50 }, cw = w - pad.l - pad.r, ch = h - pad.t - pad.b;
-            ctx.clearRect(0, 0, w, h); ctx.strokeStyle = 'rgba(30,48,80,0.5)'; ctx.lineWidth = 1;
-            for (let i = 0; i <= 4; i++) { const y = pad.t + (ch / 4) * i; ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(w - pad.r, y); ctx.stroke(); ctx.fillStyle = '#5a6d8a'; ctx.font = '11px Segoe UI'; ctx.textAlign = 'right'; ctx.fillText(Math.round(80 - (80 / 4) * i), pad.l - 8, y + 4); }
+            const canvas = document.getElementById(id);
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+            const container = canvas.parentElement;
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+
+            const w = canvas.width, h = canvas.height;
+            const pad = { t: 20, r: 20, b: 40, l: 50 };
+            const cw = w - pad.l - pad.r, ch = h - pad.t - pad.b;
+
+            ctx.clearRect(0, 0, w, h);
+            ctx.strokeStyle = 'rgba(30,48,80,0.5)';
+            ctx.lineWidth = 1;
+
+            // Grid
+            for (let i = 0; i <= 4; i++) {
+                const y = pad.t + (ch / 4) * i;
+                ctx.beginPath();
+                ctx.moveTo(pad.l, y);
+                ctx.lineTo(w - pad.r, y);
+                ctx.stroke();
+                ctx.fillStyle = '#5a6d8a';
+                ctx.font = '11px Segoe UI';
+                ctx.textAlign = 'right';
+                ctx.fillText(Math.round(80 - (80 / 4) * i), pad.l - 8, y + 4);
+            }
+
             if (type === 'bar') {
                 const bw = cw / data.length * 0.5, gap = cw / data.length;
                 data.forEach((v, i) => {
-                    const x = pad.l + gap * i + gap / 2 - bw / 2, bh = (v / 80) * ch, y = pad.t + ch - bh;
-                    const g = ctx.createLinearGradient(x, y, x, y + bh); g.addColorStop(0, colors[0] || '#00B4D8'); g.addColorStop(1, colors[1] || '#0077B6');
-                    ctx.fillStyle = g; ctx.beginPath(); ctx.roundRect(x, y, bw, bh, [4, 4, 0, 0]); ctx.fill();
-                    ctx.fillStyle = '#5a6d8a'; ctx.font = '11px Segoe UI'; ctx.textAlign = 'center'; ctx.fillText(labels[i], x + bw / 2, h - pad.b + 20);
-                    ctx.fillStyle = '#e8edf5'; ctx.font = 'bold 11px Segoe UI'; ctx.fillText(v, x + bw / 2, y - 8);
+                    const x = pad.l + gap * i + gap / 2 - bw / 2;
+                    const bh = (v / 80) * ch, y = pad.t + ch - bh;
+                    const g = ctx.createLinearGradient(x, y, x, y + bh);
+                    g.addColorStop(0, colors[0] || '#00B4D8');
+                    g.addColorStop(1, colors[1] || '#0077B6');
+                    ctx.fillStyle = g;
+                    ctx.beginPath();
+                    ctx.roundRect?.(x, y, bw, bh, [4, 4, 0, 0]) || ctx.rect(x, y, bw, bh);
+                    ctx.fill();
+                    ctx.fillStyle = '#5a6d8a';
+                    ctx.font = '11px Segoe UI';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(labels[i], x + bw / 2, h - pad.b + 20);
+                    ctx.fillStyle = '#e8edf5';
+                    ctx.font = 'bold 11px Segoe UI';
+                    ctx.fillText(v, x + bw / 2, y - 8);
                 });
             } else if (type === 'line') {
-                ctx.strokeStyle = colors[0] || '#0077B6'; ctx.lineWidth = 2.5; ctx.beginPath();
-                data.forEach((v, i) => { const x = pad.l + (cw / 12) * i + cw / 24, y = pad.t + ch - (v / 450) * ch; if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y); });
-                ctx.stroke(); data.forEach((v, i) => { const x = pad.l + (cw / 12) * i + cw / 24, y = pad.t + ch - (v / 450) * ch; ctx.beginPath(); ctx.arc(x, y, 4, 0, Math.PI * 2); ctx.fillStyle = colors[0] || '#0077B6'; ctx.fill(); });
-                ctx.fillStyle = '#5a6d8a'; ctx.font = '11px Segoe UI'; ctx.textAlign = 'center'; labels.forEach((l, i) => ctx.fillText(l, pad.l + (cw / 12) * i + cw / 24, h - pad.b + 20));
+                ctx.strokeStyle = colors[0] || '#0077B6';
+                ctx.lineWidth = 2.5;
+                ctx.beginPath();
+                data.forEach((v, i) => {
+                    const x = pad.l + (cw / 12) * i + cw / 24;
+                    const y = pad.t + ch - (v / 450) * ch;
+                    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+                });
+                ctx.stroke();
+                data.forEach((v, i) => {
+                    const x = pad.l + (cw / 12) * i + cw / 24;
+                    const y = pad.t + ch - (v / 450) * ch;
+                    ctx.beginPath();
+                    ctx.arc(x, y, 4, 0, Math.PI * 2);
+                    ctx.fillStyle = colors[0] || '#0077B6';
+                    ctx.fill();
+                });
+                ctx.fillStyle = '#5a6d8a';
+                ctx.font = '11px Segoe UI';
+                ctx.textAlign = 'center';
+                labels.forEach((l, i) => ctx.fillText(l, pad.l + (cw / 12) * i + cw / 24, h - pad.b + 20));
             }
         }
-        function drawAttendanceChart() { drawChart('attendanceChart', 'bar', [42, 58, 35, 67, 52, 74, 48], ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'], ['#00B4D8', '#0077B6']); }
-        function drawSpecialtyChart() { const cvs = document.getElementById('specialtyChart'); if (!cvs) return; const ctx = cvs.getContext('2d'), cont = cvs.parentElement; cvs.width = cont.clientWidth; cvs.height = cont.clientHeight; const w = cvs.width, h = cvs.height, cx = w * 0.35, cy = h / 2, r = Math.min(cx - 20, cy - 20), data = [{ l: 'Cardio', v: 28, c: '#0077B6' }, { l: 'Orto', v: 22, c: '#00C9A7' }, { l: 'Neuro', v: 18, c: '#8B5CF6' }, { l: 'Pedia', v: 15, c: '#EC4899' }, { l: 'Derma', v: 10, c: '#F59E0B' }, { l: 'Outros', v: 7, c: '#6366F1' }], tot = data.reduce((s, d) => s + d.v, 0); ctx.clearRect(0, 0, w, h); let sa = -Math.PI / 2; data.forEach(d => { const ang = (d.v / tot) * Math.PI * 2; ctx.beginPath(); ctx.moveTo(cx, cy); ctx.arc(cx, cy, r, sa, sa + ang); ctx.closePath(); ctx.fillStyle = d.c; ctx.fill(); ctx.beginPath(); ctx.arc(cx, cy, r * 0.6, 0, Math.PI * 2); ctx.fillStyle = '#121e33'; ctx.fill(); sa += ang; }); ctx.fillStyle = '#e8edf5'; ctx.font = 'bold 24px Segoe UI'; ctx.textAlign = 'center'; ctx.fillText(tot, cx, cy + 4); ctx.fillStyle = '#5a6d8a'; ctx.font = '11px Segoe UI'; ctx.fillText('Total', cx, cy + 20); let ly = 30, lx = w * 0.65; data.forEach(d => { ctx.fillStyle = d.c; ctx.beginPath(); ctx.roundRect(lx, ly, 12, 12, 3); ctx.fill(); ctx.fillStyle = '#e8edf5'; ctx.font = '12px Segoe UI'; ctx.textAlign = 'left'; ctx.fillText(d.l, lx + 20, ly + 10); ctx.fillStyle = '#5a6d8a'; ctx.textAlign = 'right'; ctx.fillText(d.v + '%', w - 16, ly + 10); ly += 36; }); }
-        function drawReportChart() { drawChart('reportChart', 'line', [350, 380, 342, 0, 0, 0, 0, 0, 0, 0, 0, 0], ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'], ['#00C9A7']); }
 
-        // ===== UTILS =====
-        function populateSelects() {
-            ['apptPatient', 'ticketPatient'].forEach(id => { const el = document.getElementById(id); if (!el) return; const cv = el.value; el.innerHTML = '<option value="">Selecione...</option>'; patients.forEach(p => el.innerHTML += `<option value="${p.name}">${p.name} (${p.id})</option>`); el.value = cv; });
-            const de = document.getElementById('apptDoctor'); if (de) { const cv = de.value; de.innerHTML = '<option value="">Selecione...</option>'; doctors.forEach(d => de.innerHTML += `<option value="${d.name}">${d.name} - ${d.specialty}</option>`); de.value = cv; }
+        function drawAttendanceChart() {
+            drawChart('attendanceChart', 'bar', [42, 58, 35, 67, 52, 74, 48], ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'], ['#00B4D8', '#0077B6']);
         }
-        function handleGlobalSearch(q) { if (!q || q.length < 2) return; q = q.toLowerCase(); if (patients.some(p => p.name.toLowerCase().includes(q))) { navigateTo('patients', document.querySelector('[data-page="patients"]')); } }
-        function handleChatKeydown(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChatMessage(); } }
-        function sendChatMessage() { Chatbot.sendMessage(); }
-        function clearChat() { Chatbot.clearChat(); }
 
-        // ===== INIT =====
+        function drawSpecialtyChart() {
+            const cvs = document.getElementById('specialtyChart');
+            if (!cvs) return;
+
+            const ctx = cvs.getContext('2d');
+            const cont = cvs.parentElement;
+            cvs.width = cont.clientWidth;
+            cvs.height = cont.clientHeight;
+
+            const w = cvs.width, h = cvs.height;
+            const cx = w * 0.35, cy = h / 2;
+            const r = Math.min(cx - 20, cy - 20);
+            const data = [
+                { l: 'Cardio', v: 28, c: '#0077B6' },
+                { l: 'Orto', v: 22, c: '#00C9A7' },
+                { l: 'Neuro', v: 18, c: '#8B5CF6' },
+                { l: 'Pedia', v: 15, c: '#EC4899' },
+                { l: 'Derma', v: 10, c: '#F59E0B' },
+                { l: 'Outros', v: 7, c: '#6366F1' }
+            ];
+            const tot = data.reduce((s, d) => s + d.v, 0);
+
+            ctx.clearRect(0, 0, w, h);
+            let sa = -Math.PI / 2;
+
+            data.forEach(d => {
+                const ang = (d.v / tot) * Math.PI * 2;
+                ctx.beginPath();
+                ctx.moveTo(cx, cy);
+                ctx.arc(cx, cy, r, sa, sa + ang);
+                ctx.closePath();
+                ctx.fillStyle = d.c;
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(cx, cy, r * 0.6, 0, Math.PI * 2);
+                ctx.fillStyle = '#121e33';
+                ctx.fill();
+                sa += ang;
+            });
+
+            ctx.fillStyle = '#e8edf5';
+            ctx.font = 'bold 24px Segoe UI';
+            ctx.textAlign = 'center';
+            ctx.fillText(tot, cx, cy + 4);
+            ctx.fillStyle = '#5a6d8a';
+            ctx.font = '11px Segoe UI';
+            ctx.fillText('Total', cx, cy + 20);
+
+            let ly = 30, lx = w * 0.65;
+            data.forEach(d => {
+                ctx.fillStyle = d.c;
+                ctx.beginPath();
+                ctx.roundRect?.(lx, ly, 12, 12, 3) || ctx.rect(lx, ly, 12, 12);
+                ctx.fill();
+                ctx.fillStyle = '#e8edf5';
+                ctx.font = '12px Segoe UI';
+                ctx.textAlign = 'left';
+                ctx.fillText(d.l, lx + 20, ly + 10);
+                ctx.fillStyle = '#5a6d8a';
+                ctx.textAlign = 'right';
+                ctx.fillText(d.v + '%', w - 16, ly + 10);
+                ly += 36;
+            });
+        }
+
+        function drawReportChart() {
+            drawChart('reportChart', 'line', [350, 380, 342, 0, 0, 0, 0, 0, 0, 0, 0, 0], ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'], ['#00C9A7']);
+        }
+
+
+        // ===== UTILITÁRIOS =====
+        function populateSelects() {
+            ['apptPatient', 'ticketPatient'].forEach(id => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                const cv = el.value;
+                el.innerHTML = '<option value="">Selecione...</option>';
+                patients.forEach(p => el.innerHTML += `<option value="${p.name}">${p.name} (${p.id})</option>`);
+                el.value = cv;
+            });
+
+            const de = document.getElementById('apptDoctor');
+            if (de) {
+                const cv = de.value;
+                de.innerHTML = '<option value="">Selecione...</option>';
+                doctors.forEach(d => de.innerHTML += `<option value="${d.name}">${d.name} - ${d.specialty}</option>`);
+                de.value = cv;
+            }
+        }
+
+        function handleGlobalSearch(q) {
+            if (!q || q.length < 2) return;
+            q = q.toLowerCase();
+            if (patients.some(p => p.name.toLowerCase().includes(q))) {
+                navigateTo('patients', document.querySelector('[data-page="patients"]'));
+            }
+        }
+
+
+        // ===== INICIALIZAÇÃO =====
         function init() {
-            renderPatients(); renderAppointments(); renderUpcomingAppointments(); renderTickets(); renderDoctors(); renderActivityFeed();
-            setTimeout(() => { drawAttendanceChart(); drawSpecialtyChart(); }, 100);
-            window.addEventListener('resize', () => { drawAttendanceChart(); drawSpecialtyChart(); const rc = document.getElementById('reportChart'); if (rc && document.getElementById('page-reports').classList.contains('active')) drawReportChart(); });
+            renderPatients();
+            renderAppointments();
+            renderUpcomingAppointments();
+            renderTickets();
+            renderDoctors();
+            renderActivityFeed();
+
+            setTimeout(() => {
+                drawAttendanceChart();
+                drawSpecialtyChart();
+            }, 100);
+
+            window.addEventListener('resize', () => {
+                drawAttendanceChart();
+                drawSpecialtyChart();
+                const rc = document.getElementById('reportChart');
+                if (rc && document.getElementById('page-reports')?.classList.contains('active')) {
+                    drawReportChart();
+                }
+            });
+
+            // Inicializa chatbot
             Chatbot.init();
         }
+
         document.addEventListener('DOMContentLoaded', init);
 
-        // Polyfill roundRect
-        if (!CanvasRenderingContext2D.prototype.roundRect) { CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) { const ra = Array.isArray(r) ? r : [r, r, r, r]; this.moveTo(x + ra[0], y); this.lineTo(x + w - ra[1], y); this.quadraticCurveTo(x + w, y, x + w, y + ra[1]); this.lineTo(x + w, y + h - ra[2]); this.quadraticCurveTo(x + w, y + h, x + w - ra[2], y + h); this.lineTo(x + ra[3], y + h); this.quadraticCurveTo(x, y + h, x, y + h - ra[3]); this.lineTo(x, y + ra[0]); this.quadraticCurveTo(x, y, x + ra[0], y); this.closePath(); return this; }; }
+
+        // ===== POLYFILL: roundRect para Canvas =====
+        if (!CanvasRenderingContext2D.prototype.roundRect) {
+            CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
+                const ra = Array.isArray(r) ? r : [r, r, r, r];
+                this.moveTo(x + ra[0], y);
+                this.lineTo(x + w - ra[1], y);
+                this.quadraticCurveTo(x + w, y, x + w, y + ra[1]);
+                this.lineTo(x + w, y + h - ra[2]);
+                this.quadraticCurveTo(x + w, y + h, x + w - ra[2], y + h);
+                this.lineTo(x + ra[3], y + h);
+                this.quadraticCurveTo(x, y + h, x, y + h - ra[3]);
+                this.lineTo(x, y + ra[0]);
+                this.quadraticCurveTo(x, y, x + ra[0], y);
+                this.closePath();
+                return this;
+            };
+        }
     </script>
+
+
+    <!-- ===== JAVASCRIPT ===== -->
+    <script src="/js/app.js"></script>
+
+
+
+
 </body>
+
+
 
 </html>
