@@ -216,6 +216,7 @@ router.delete('/chat/history', (req, res) => {
     }
 });
 
+
 // ===== DEBUG ENDPOINT (apenas development) =====
 if (process.env.NODE_ENV !== 'production') {
     router.get('/debug/env', (req, res) => {

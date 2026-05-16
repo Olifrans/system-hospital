@@ -1,323 +1,3 @@
-// import axios from 'axios';
-
-// // ===== CONFIGURAÇÃO NVIDIA NIM =====
-// const NVIDIA_CONFIG = {
-//     baseUrl: process.env.NVIDIA_BASE_URL || 'https://integrate.api.nvidia.com/v1',
-//     apiKey: process.env.NVIDIA_API_KEY,
-//     defaultModel: process.env.NVIDIA_DEFAULT_MODEL || 'meta/llama-3.1-70b-instruct',
-    
-//     // Lista de modelos chat suportados
-//     chatModels: (process.env.NVIDIA_CHAT_MODELS || 'meta/llama-3.1-70b-instruct')
-//         .split(',')
-//         .map(m => m.trim())
-//         .filter(m => m),
-    
-//     // Metadados dos modelos para exibição
-//     modelMetadata: {
-//         'meta/llama-3.1-70b-instruct': {
-//             name: 'Llama 3.1 70B',
-//             description: 'Modelo geral para chat e raciocínio',
-//             icon: '🦙',
-//             context: '128K',
-//             speed: 'fast'
-//         },
-//         'nvidia/nemotron-3-super-120b-a12b': {
-//             name: 'Nemotron 3 Super 120B',
-//             description: 'MoE híbrido para raciocínio agêntico',
-//             icon: '⚡',
-//             context: '1M',
-//             speed: 'medium'
-//         },
-//         'qwen/qwen3.5-122b-a10b': {
-//             name: 'Qwen 3.5 122B',
-//             description: 'LLM MoE para coding e multimodal',
-//             icon: '🔷',
-//             context: '256K',
-//             speed: 'medium'
-//         },
-//         'deepseek-ai/deepseek-v3.2': {
-//             name: 'DeepSeek V3.2',
-//             description: 'LLM de raciocínio state-of-the-art',
-//             icon: '🔶',
-//             context: '128K',
-//             speed: 'fast'
-//         },
-//         'google/gemma-3-27b-it': {
-//             name: 'Gemma 3 27B',
-//             description: 'Modelo multimodal open-source',
-//             icon: '💎',
-//             context: '32K',
-//             speed: 'fast'
-//         },
-//         'mistralai/mistral-large-3-675b-instruct-2512': {
-//             name: 'Mistral Large 3',
-//             description: 'VLM geral para chat e agentes',
-//             icon: '🌪️',
-//             context: '256K',
-//             speed: 'medium'
-//         }
-//     }
-// };
-
-// // ===== MEMORY DO CHAT =====
-// const chatMemory = new Map();
-
-// const getSystemPrompt = (context = {}) => {
-//     return `Você é ${process.env.CHATBOT_NAME || 'MedAssistente'}, assistente especializado em gestão hospitalar.
-
-// CONTEXTO:
-// - Hospital: ${context.hospital || 'Hospital Central São Lucas'}
-// - Usuário: ${context.role || 'profissional de saúde'}
-// - Data: ${new Date().toLocaleDateString('pt-BR')}
-
-// DIRETRIZES:
-// 1. Seja profissional, empático e preciso
-// 2. Baseie-se em práticas médicas e administrativas
-// 3. NUNCA substitua julgamento clínico profissional
-// 4. Para emergências, oriente atendimento imediato
-// 5. Mantenha confidencialidade de dados
-// 6. Use português do Brasil claro
-
-// Responda de forma concisa e útil.`;
-// };
-
-// // ===== FUNÇÕES PRINCIPAIS =====
-
-// export const getAvailableProviders = () => {
-//     const providers = [];
-    
-//     // NVIDIA NIM
-//     if (NVIDIA_CONFIG.apiKey && NVIDIA_CONFIG.apiKey !== 'nvapi-TTTTT') {
-//         const models = NVIDIA_CONFIG.chatModels.map(modelId => {
-//             const meta = NVIDIA_CONFIG.modelMetadata[modelId] || {};
-//             return {
-//                 id: `nvidia:${modelId}`,
-//                 name: `${meta.icon || '🔵'} ${meta.name || modelId}`,
-//                 available: true,
-//                 provider: 'nvidia',
-//                 model: modelId,
-//                 description: meta.description
-//             };
-//         });
-//         providers.push(...models);
-//     }
-    
-//     // Fallback para modo demo
-//     if (providers.length === 0) {
-//         providers.push({
-//             id: 'demo',
-//             name: '🔧 Modo Demo',
-//             available: true,
-//             provider: 'demo',
-//             description: 'Sem chave de API configurada'
-//         });
-//     }
-    
-//     return providers;
-// };
-
-// export const switchProvider = (providerId) => {
-//     // Para NVIDIA, providerId é no formato "nvidia:model_id"
-//     if (providerId.startsWith('nvidia:')) {
-//         const modelId = providerId.replace('nvidia:', '');
-//         if (NVIDIA_CONFIG.chatModels.includes(modelId)) {
-//             process.env.NVIDIA_CURRENT_MODEL = modelId;
-//             return { success: true, model: modelId };
-//         }
-//         return { success: false, error: `Modelo "${modelId}" não disponível` };
-//     }
-    
-//     if (providerId === 'demo') {
-//         process.env.AI_PROVIDER = 'demo';
-//         return { success: true };
-//     }
-    
-//     return { success: false, error: 'Provider não suportado' };
-// };
-
-// export const getChatHistory = (userId, limit = 50) => {
-//     const history = chatMemory.get(userId) || [];
-//     return history.slice(-limit);
-// };
-
-// export const clearChatHistory = (userId) => {
-//     chatMemory.delete(userId);
-//     return true;
-// };
-
-// const saveToHistory = (userId, role, content) => {
-//     if (!chatMemory.has(userId)) chatMemory.set(userId, []);
-//     const history = chatMemory.get(userId);
-//     history.push({ role, content, timestamp: new Date().toISOString() });
-//     if (history.length > 100) history.shift();
-// };
-
-// // ===== NVIDIA NIM CALL =====
-
-// const callNVIDIA = async (messages, modelId, config) => {
-//     const endpoint = `${NVIDIA_CONFIG.baseUrl}/chat/completions`;
-    
-//     const response = await axios.post(endpoint, {
-//         model: modelId,
-//         messages,
-//         max_tokens: parseInt(process.env.CHATBOT_MAX_TOKENS) || 2000,
-//         temperature: parseFloat(process.env.CHATBOT_TEMPERATURE) || 0.3,
-//         stream: false
-//     }, {
-//         headers: {
-//             'Authorization': `Bearer ${NVIDIA_CONFIG.apiKey}`,
-//             'Content-Type': 'application/json',
-//             'Accept': 'application/json'
-//         },
-//         timeout: 60000
-//     });
-    
-//     return response.data.choices[0]?.message?.content || 'Sem resposta do modelo.';
-// };
-
-// // ===== MODO DEMO =====
-
-// const getMockResponse = (userMessage, context) => {
-//     const msg = userMessage.toLowerCase();
-    
-//     if (msg.includes('consulta') || msg.includes('agendar')) {
-//         return `📅 **Agendamento de Consultas**
-        
-// Para agendar:
-// 1. Acesse "Consultas" no menu
-// 2. Clique em "+ Agendar Consulta"
-// 3. Preencha os dados do paciente
-// 4. Selecione médico e horário
-
-// Precisa de ajuda com algo específico?`;
-//     }
-//     if (msg.includes('paciente') || msg.includes('cadastrar')) {
-//         return `👥 **Cadastro de Pacientes**
-        
-// 1. Vá em "Pacientes"
-// 2. Clique em "+ Novo Paciente"
-// 3. Preencha: Nome, CPF, Data de Nascimento, Telefone, Convênio
-
-// O sistema gera ID automático!`;
-//     }
-//     if (msg.includes('relatório') || msg.includes('métrica')) {
-//         return `📊 **Relatórios Disponíveis**
-        
-// • Dashboard: visão geral em tempo real
-// • Atendimentos: por período/especialidade
-// • Pacientes: ativos, inativos, novos
-// • Financeiro: consultas realizadas
-// • Produtividade: por médico
-
-// Qual deseja visualizar?`;
-//     }
-    
-//     return `🏥 **MedAssistente - NVIDIA NIM**
-
-// Estou rodando com modelos NVIDIA de última geração:
-
-// ${NVIDIA_CONFIG.chatModels.map(m => {
-//     const meta = NVIDIA_CONFIG.modelMetadata[m] || {};
-//     return `• ${meta.icon || '🔵'} ${meta.name || m}`;
-// }).join('\n')}
-
-// Posso ajudar com:
-// 📅 Consultas | 👥 Pacientes | 👨‍⚕️ Médicos
-// 📊 Relatórios | 🎫 Atendimentos | ⚙️ Configurações
-
-// Como posso ajudar?`;
-// };
-
-// // ===== FUNÇÃO PRINCIPAL =====
-
-// export const sendMessage = async (userMessage, options = {}) => {
-//     const { context = {}, provider, userId = 'anonymous' } = options;
-    
-//     console.log(`📩 Mensagem: ${userMessage.substring(0, 50)}... | Provider: ${provider}`);
-    
-//     // Modo demo ou provider não configurado
-//     if (!provider || provider === 'demo' || !NVIDIA_CONFIG.apiKey || NVIDIA_CONFIG.apiKey === 'nvapi-TTTTT') {
-//         const response = getMockResponse(userMessage, context);
-//         saveToHistory(userId, 'user', userMessage);
-//         saveToHistory(userId, 'assistant', response);
-//         return {
-//             message: response,
-//             provider: 'Modo Demo',
-//             timestamp: new Date().toISOString(),
-//             meta: { mock: true }
-//         };
-//     }
-    
-//     // Extrair modelId do provider (formato: "nvidia:model_id")
-//     const modelId = provider.startsWith('nvidia:') ? provider.replace('nvidia:', '') : NVIDIA_CONFIG.defaultModel;
-    
-//     const messages = [
-//         { role: 'system', content: getSystemPrompt(context) },
-//         ...getChatHistory(userId, 10).map(h => ({ role: h.role, content: h.content })),
-//         { role: 'user', content: userMessage }
-//     ];
-    
-//     saveToHistory(userId, 'user', userMessage);
-    
-//     try {
-//         console.log(`🤖 Chamando NVIDIA: ${modelId}`);
-        
-//         const response = await callNVIDIA(messages, modelId, options);
-        
-//         saveToHistory(userId, 'assistant', response);
-        
-//         const meta = NVIDIA_CONFIG.modelMetadata[modelId] || {};
-        
-//         return {
-//             message: response,
-//             provider: meta.name || modelId,
-//             timestamp: new Date().toISOString(),
-//             meta: {
-//                 model: modelId,
-//                 context: meta.context,
-//                 icon: meta.icon
-//             }
-//         };
-        
-//     } catch (error) {
-//         console.error(`❌ Erro NVIDIA ${modelId}:`, error.message);
-        
-//         // Fallback para resposta de erro amigável
-//         const fallback = `⚠️ **Erro ao processar com ${modelId}**
-
-// Detalhes: ${error.message}
-
-// Tente:
-// 1. Verificar sua chave NVIDIA_API_KEY no .env
-// 2. Confirmar que o modelo está disponível na sua conta
-// 3. Trocar para outro modelo no seletor
-
-// Enquanto isso, posso ajudar com informações do sistema.`;
-        
-//         saveToHistory(userId, 'assistant', fallback);
-        
-//         return {
-//             message: fallback,
-//             provider: 'Erro',
-//             timestamp: new Date().toISOString(),
-//             meta: { error: error.message, fallback: true }
-//         };
-//     }
-// };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // services/aiService.js
 import axios from 'axios';
 import OpenAI from 'openai';
@@ -326,620 +6,391 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 
 // ===== CONFIGURAÇÃO DOS PROVIDERS =====
 const PROVIDERS = {
-  
-  // ===== NVIDIA NIM =====
-  nvidia: {
-    name: 'NVIDIA NIM',
-    enabled: false,
-    endpoint: process.env.NVIDIA_BASE_URL || 'https://integrate.api.nvidia.com/v1',
-    defaultModel: process.env.NVIDIA_DEFAULT_MODEL || 'meta/llama-3.1-70b-instruct',
-    chatModels: [],
-    
-    init: () => {
-      const key = process.env.NVIDIA_API_KEY;
-      const modelsEnv = process.env.NVIDIA_CHAT_MODELS || '';
-      
-      // Debug logs
-      console.log('🔍 [NVIDIA] API Key presente:', !!key);
-      console.log('🔍 [NVIDIA] API Key length:', key?.length);
-      console.log('🔍 [NVIDIA] API Key starts with nvapi-:', key?.trim().startsWith('nvapi-'));
-      console.log('🔍 [NVIDIA] Models env:', modelsEnv);
-      
-      // Validação robusta da chave
-      if (key && typeof key === 'string') {
-        const cleanKey = key.trim();
-        if (cleanKey.startsWith('nvapi-') && cleanKey.length >= 20) {
-          PROVIDERS.nvidia.enabled = true;
-          
-          // Parse dos modelos disponíveis
-          if (modelsEnv) {
-            PROVIDERS.nvidia.chatModels = modelsEnv
-              .split(',')
-              .map(m => m.trim())
-              .filter(m => m);
-          } else {
-            PROVIDERS.nvidia.chatModels = [PROVIDERS.nvidia.defaultModel];
-          }
-          
-          console.log('✅ NVIDIA NIM configurado');
-          console.log(`   📦 Modelos disponíveis: ${PROVIDERS.nvidia.chatModels.join(', ')}`);
-        } else {
-          console.log('⚠️  NVIDIA NIM: chave com formato inválido');
-          console.log(`   💡 Dica: A chave deve começar com "nvapi-" e ter pelo menos 20 caracteres`);
+    // ===== NVIDIA NIM =====
+    nvidia: {
+        name: 'NVIDIA NIM',
+        enabled: false,
+        endpoint: process.env.NVIDIA_BASE_URL || 'https://integrate.api.nvidia.com/v1',
+        defaultModel: process.env.NVIDIA_DEFAULT_MODEL || 'meta/llama-3.1-70b-instruct',
+        chatModels: [],
+        init: () => {
+            const rawKey = process.env.NVIDIA_API_KEY;
+            const key = rawKey?.trim();
+            const modelsEnv = process.env.NVIDIA_CHAT_MODELS || '';
+
+            console.log('🔍 [NVIDIA] Debug da configuração:');
+            console.log('   Chave presente:', !!rawKey);
+            console.log('   Chave length (bruta):', rawKey?.length);
+            console.log('   Chave length (trim):', key?.length);
+            console.log('   Começa com nvapi-:', key?.startsWith('nvapi-'));
+            console.log('   Primeiros 20 chars:', key?.substring(0, 20));
+
+            // Validação permissiva: chave NVIDIA típica tem ~88 chars
+            if (key && key.length >= 50 && key.startsWith('nvapi-')) {
+                PROVIDERS.nvidia.enabled = true;
+                PROVIDERS.nvidia.chatModels = modelsEnv
+                    ? modelsEnv.split(',').map(m => m.trim()).filter(Boolean)
+                    : [PROVIDERS.nvidia.defaultModel];
+                console.log('✅ NVIDIA NIM HABILITADO');
+                console.log(`   📦 Modelos: ${PROVIDERS.nvidia.chatModels.join(', ')}`);
+            } else {
+                console.log('⚠️ NVIDIA NIM: chave inválida ou ausente');
+                if (key) {
+                    console.log(`   💡 Dica: chave tem ${key.length} chars, mínimo recomendado: 50`);
+                }
+            }
         }
-      } else {
-        console.log('⚠️  NVIDIA NIM: chave não configurada');
-      }
-    }
-  },
-  
-  // ===== OpenAI =====
-  openai: {
-    name: 'OpenAI (GPT)',
-    enabled: false,
-    client: null,
-    init: () => {
-      const key = process.env.OPENAI_API_KEY?.trim();
-      if (key && key.length > 20 && (key.startsWith('sk-') || key.startsWith('sk-proj-'))) {
-        try {
-          PROVIDERS.openai.client = new OpenAI({ apiKey: key });
-          PROVIDERS.openai.enabled = true;
-          console.log('✅ OpenAI configurado');
-        } catch (error) {
-          console.log('⚠️  OpenAI: erro ao inicializar cliente:', error.message);
+    },
+
+    // ===== OpenAI =====
+    openai: {
+        name: 'OpenAI (GPT)',
+        enabled: false,
+        client: null,
+        init: () => {
+            const key = process.env.OPENAI_API_KEY?.trim();
+            if (key && (key.startsWith('sk-') || key.startsWith('sk-proj-')) && key.length > 20) {
+                try {
+                    PROVIDERS.openai.client = new OpenAI({ apiKey: key });
+                    PROVIDERS.openai.enabled = true;
+                    console.log('✅ OpenAI habilitado');
+                } catch (e) { console.log('⚠️ OpenAI: erro ao inicializar', e.message); }
+            } else { console.log('⚠️ OpenAI desabilitado'); }
         }
-      } else {
-        console.log('⚠️  OpenAI não configurado');
-      }
-    }
-  },
-  
-  // ===== DeepSeek =====
-  deepseek: {
-    name: 'DeepSeek',
-    enabled: false,
-    endpoint: 'https://api.deepseek.com/v1',
-    model: process.env.DEEPSEEK_MODEL || 'deepseek-chat',
-    init: () => {
-      const key = process.env.DEEPSEEK_API_KEY?.trim();
-      if (key && key.length > 20 && key.startsWith('sk-')) {
-        PROVIDERS.deepseek.enabled = true;
-        console.log('✅ DeepSeek configurado');
-      } else {
-        console.log('⚠️  DeepSeek não configurado');
-      }
-    }
-  },
-  
-  // ===== Qwen =====
-  qwen: {
-    name: 'Qwen (Alibaba)',
-    enabled: false,
-    endpoint: 'https://dashscope.aliyuncs.com/api/v1',
-    model: process.env.QWEN_MODEL || 'qwen-max',
-    init: () => {
-      const key = process.env.QWEN_API_KEY?.trim();
-      if (key && key.length > 10) {
-        PROVIDERS.qwen.enabled = true;
-        console.log('✅ Qwen configurado');
-      } else {
-        console.log('⚠️  Qwen não configurado');
-      }
-    }
-  },
-  
-  // ===== Google Gemini =====
-  gemini: {
-    name: 'Google Gemini',
-    enabled: false,
-    client: null,
-    init: () => {
-      const key = process.env.GEMINI_API_KEY?.trim();
-      if (key && key.length > 20 && key.startsWith('AIza')) {
-        try {
-          PROVIDERS.gemini.client = new GoogleGenerativeAI(key);
-          PROVIDERS.gemini.enabled = true;
-          console.log('✅ Google Gemini configurado');
-        } catch (error) {
-          console.log('⚠️  Google Gemini: erro ao inicializar:', error.message);
+    },
+
+    // ===== DeepSeek =====
+    deepseek: {
+        name: 'DeepSeek',
+        enabled: false,
+        endpoint: 'https://api.deepseek.com/v1',
+        model: process.env.DEEPSEEK_MODEL || 'deepseek-chat',
+        init: () => {
+            const key = process.env.DEEPSEEK_API_KEY?.trim();
+            if (key && key.startsWith('sk-') && key.length > 20) {
+                PROVIDERS.deepseek.enabled = true;
+                console.log('✅ DeepSeek habilitado');
+            } else { console.log('⚠️ DeepSeek desabilitado'); }
         }
-      } else {
-        console.log('⚠️  Google Gemini não configurado');
-      }
-    }
-  },
-  
-  // ===== Azure Copilot =====
-  copilot: {
-    name: 'Microsoft Copilot (Azure)',
-    enabled: false,
-    client: null,
-    init: () => {
-      const endpoint = process.env.AZURE_OPENAI_ENDPOINT?.trim();
-      const key = process.env.AZURE_OPENAI_KEY?.trim();
-      if (endpoint && key && endpoint.includes('openai.azure.com')) {
-        try {
-          PROVIDERS.copilot.client = new OpenAI({
-            apiKey: key,
-            baseURL: `${endpoint}/openai/deployments/${process.env.AZURE_DEPLOYMENT_NAME || 'gpt-4'}`,
-            defaultQuery: { 'api-version': '2024-02-15-preview' },
-            defaultHeaders: { 'api-key': key }
-          });
-          PROVIDERS.copilot.enabled = true;
-          console.log('✅ Azure Copilot configurado');
-        } catch (error) {
-          console.log('⚠️  Azure Copilot: erro ao inicializar:', error.message);
+    },
+
+    // ===== Qwen =====
+    qwen: {
+        name: 'Qwen (Alibaba)',
+        enabled: false,
+        endpoint: 'https://dashscope.aliyuncs.com/api/v1',
+        model: process.env.QWEN_MODEL || 'qwen-max',
+        init: () => {
+            const key = process.env.QWEN_API_KEY?.trim();
+            if (key && key.length > 10) {
+                PROVIDERS.qwen.enabled = true;
+                console.log('✅ Qwen habilitado');
+            } else { console.log('⚠️ Qwen desabilitado'); }
         }
-      } else {
-        console.log('⚠️  Azure Copilot não configurado');
-      }
-    }
-  },
-  
-  // ===== Google AI Studio =====
-  google: {
-    name: 'Google AI Studio',
-    enabled: false,
-    endpoint: 'https://generativelanguage.googleapis.com/v1beta',
-    init: () => {
-      const key = process.env.GOOGLE_AI_STUDIO_KEY?.trim();
-      if (key && key.length > 10) {
-        PROVIDERS.google.enabled = true;
-        console.log('✅ Google AI Studio configurado');
-      } else {
-        console.log('⚠️  Google AI Studio não configurado');
-      }
-    }
-  },
-  
-  // ===== Anthropic Claude =====
-  claude: {
-    name: 'Anthropic Claude',
-    enabled: false,
-    client: null,
-    init: () => {
-      const key = process.env.CLAUDE_API_KEY?.trim();
-      if (key && key.length > 20 && key.startsWith('sk-ant-')) {
-        try {
-          PROVIDERS.claude.client = new Anthropic({ apiKey: key });
-          PROVIDERS.claude.enabled = true;
-          console.log('✅ Anthropic Claude configurado');
-        } catch (error) {
-          console.log('⚠️  Anthropic Claude: erro ao inicializar:', error.message);
+    },
+
+    // ===== Google Gemini =====
+    gemini: {
+        name: 'Google Gemini',
+        enabled: false,
+        client: null,
+        init: () => {
+            const key = process.env.GEMINI_API_KEY?.trim();
+            if (key && key.startsWith('AIza') && key.length > 20) {
+                try {
+                    PROVIDERS.gemini.client = new GoogleGenerativeAI(key);
+                    PROVIDERS.gemini.enabled = true;
+                    console.log('✅ Google Gemini habilitado');
+                } catch (e) { console.log('⚠️ Gemini: erro ao inicializar', e.message); }
+            } else { console.log('⚠️ Google Gemini desabilitado'); }
         }
-      } else {
-        console.log('⚠️  Anthropic Claude não configurado');
-      }
+    },
+
+    // ===== Azure Copilot =====
+    copilot: {
+        name: 'Microsoft Copilot (Azure)',
+        enabled: false,
+        client: null,
+        init: () => {
+            const endpoint = process.env.AZURE_OPENAI_ENDPOINT?.trim();
+            const key = process.env.AZURE_OPENAI_KEY?.trim();
+            if (endpoint && key && endpoint.includes('openai.azure.com')) {
+                try {
+                    PROVIDERS.copilot.client = new OpenAI({
+                        apiKey: key,
+                        baseURL: `${endpoint}/openai/deployments/${process.env.AZURE_DEPLOYMENT_NAME || 'gpt-4'}`,
+                        defaultQuery: { 'api-version': '2024-02-15-preview' },
+                        defaultHeaders: { 'api-key': key }
+                    });
+                    PROVIDERS.copilot.enabled = true;
+                    console.log('✅ Azure Copilot habilitado');
+                } catch (e) { console.log('⚠️ Copilot: erro ao inicializar', e.message); }
+            } else { console.log('⚠️ Azure Copilot desabilitado'); }
+        }
+    },
+
+    // ===== Google AI Studio =====
+    google: {
+        name: 'Google AI Studio',
+        enabled: false,
+        endpoint: 'https://generativelanguage.googleapis.com/v1beta',
+        init: () => {
+            const key = process.env.GOOGLE_AI_STUDIO_KEY?.trim();
+            if (key && key.length > 10) {
+                PROVIDERS.google.enabled = true;
+                console.log('✅ Google AI Studio habilitado');
+            } else { console.log('⚠️ Google AI Studio desabilitado'); }
+        }
+    },
+
+    // ===== Anthropic Claude =====
+    claude: {
+        name: 'Anthropic Claude',
+        enabled: false,
+        client: null,
+        init: () => {
+            const key = process.env.CLAUDE_API_KEY?.trim();
+            if (key && key.startsWith('sk-ant-') && key.length > 20) {
+                try {
+                    PROVIDERS.claude.client = new Anthropic({ apiKey: key });
+                    PROVIDERS.claude.enabled = true;
+                    console.log('✅ Anthropic Claude habilitado');
+                } catch (e) { console.log('⚠️ Claude: erro ao inicializar', e.message); }
+            } else { console.log('⚠️ Anthropic Claude desabilitado'); }
+        }
     }
-  }
 };
 
-// ===== INICIALIZAÇÃO DOS PROVIDERS =====
+// ===== INICIALIZAÇÃO SÍNCRONA =====
 console.log('\n🔧 Inicializando providers AI...');
-Object.values(PROVIDERS).forEach(p => { if (p.init) p.init(); });
+Object.values(PROVIDERS).forEach(p => p.init?.());
+const enabledCount = Object.values(PROVIDERS).filter(p => p.enabled).length;
+console.log(`📦 ${enabledCount} provider(s) pronto(s)\n`);
 
-// Contar providers disponíveis
-const availableCount = Object.values(PROVIDERS).filter(p => p.enabled).length;
-console.log(`📦 ${availableCount} provider(s) disponível(is)\n`);
-
-// ===== MEMORY DO CHAT =====
+// ===== MEMORY & HELPERS =====
 const chatMemory = new Map();
 
-// ===== SYSTEM PROMPT =====
-const getSystemPrompt = (context = {}) => {
-  return `Você é ${process.env.CHATBOT_NAME || 'MedAssistente'}, assistente especializado em gestão hospitalar.
-
-CONTEXTO:
-- Hospital: ${context.hospital || 'Hospital Central São Lucas'}
-- Usuário: ${context.role || 'profissional de saúde'}
-- Data: ${new Date().toLocaleDateString('pt-BR')}
-
-DIRETRIZES:
-1. Seja profissional, empático e preciso
-2. Baseie-se em práticas médicas e administrativas
-3. NUNCA substitua julgamento clínico profissional
-4. Para emergências, oriente atendimento imediato
-5. Mantenha confidencialidade de dados
-6. Use português do Brasil claro
-
-Responda de forma concisa e útil.`;
-};
-
-// ===== FUNÇÕES PRINCIPAIS =====
-
-export const getAvailableProviders = () => {
-  const providers = [];
-  
-  // NVIDIA: Adiciona cada modelo como um provider separado
-  if (PROVIDERS.nvidia.enabled) {
-    const icons = {
-      'llama': '🦙', 'nemotron': '⚡', 'qwen': '🔷', 'deepseek': '🔶',
-      'gemma': '💎', 'mistral': '🌪️', 'default': '🔵'
-    };
-    
-    PROVIDERS.nvidia.chatModels.forEach(modelId => {
-      const icon = Object.entries(icons).find(([k]) => modelId.toLowerCase().includes(k))?.[1] || icons.default;
-      const modelName = modelId.split('/').pop()?.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) || modelId;
-      
-      providers.push({
-        id: `nvidia:${modelId}`,
-        name: `${icon} ${modelName}`,
-        available: true,
-        provider: 'nvidia',
-        model: modelId,
-        description: `NVIDIA NIM: ${modelName}`
-      });
-    });
-  }
-  
-  // Outros providers (simplificado)
-  if (PROVIDERS.openai.enabled) {
-    providers.push({ id: 'openai', name: '🟢 OpenAI GPT-4', available: true, provider: 'openai' });
-  }
-  if (PROVIDERS.deepseek.enabled) {
-    providers.push({ id: 'deepseek', name: '🟡 DeepSeek', available: true, provider: 'deepseek' });
-  }
-  if (PROVIDERS.qwen.enabled) {
-    providers.push({ id: 'qwen', name: '🔴 Qwen', available: true, provider: 'qwen' });
-  }
-  if (PROVIDERS.gemini.enabled) {
-    providers.push({ id: 'gemini', name: '🟣 Gemini', available: true, provider: 'gemini' });
-  }
-  if (PROVIDERS.copilot.enabled) {
-    providers.push({ id: 'copilot', name: '🔷 Copilot', available: true, provider: 'copilot' });
-  }
-  if (PROVIDERS.google.enabled) {
-    providers.push({ id: 'google', name: '🔶 AI Studio', available: true, provider: 'google' });
-  }
-  if (PROVIDERS.claude.enabled) {
-    providers.push({ id: 'claude', name: '🟠 Claude', available: true, provider: 'claude' });
-  }
-  
-  // Fallback para demo
-  if (providers.length === 0) {
-    providers.push({ id: 'demo', name: '🔧 Modo Demo', available: true, provider: 'demo' });
-  }
-  
-  return providers;
-};
-
-export const switchProvider = (providerId) => {
-  // Formato NVIDIA: "nvidia:model_id"
-  if (providerId?.startsWith('nvidia:')) {
-    const modelId = providerId.replace('nvidia:', '');
-    if (PROVIDERS.nvidia.enabled && PROVIDERS.nvidia.chatModels.includes(modelId)) {
-      process.env.NVIDIA_CURRENT_MODEL = modelId;
-      process.env.AI_PROVIDER = providerId;
-      return { success: true, model: modelId, provider: 'nvidia' };
-    }
-    return { success: false, error: `Modelo "${modelId}" não disponível` };
-  }
-  
-  // Demo
-  if (providerId === 'demo') {
-    process.env.AI_PROVIDER = 'demo';
-    return { success: true };
-  }
-  
-  // Outros providers
-  if (PROVIDERS[providerId]?.enabled) {
-    process.env.AI_PROVIDER = providerId;
-    return { success: true };
-  }
-  
-  return { success: false, error: `Provider "${providerId}" não encontrado ou configurado` };
-};
-
-export const getChatHistory = (userId, limit = 50) => {
-  const history = chatMemory.get(userId) || [];
-  return history.slice(-limit);
-};
-
-export const clearChatHistory = (userId) => {
-  chatMemory.delete(userId);
-  return true;
-};
-
 const saveToHistory = (userId, role, content) => {
-  if (!chatMemory.has(userId)) chatMemory.set(userId, []);
-  const history = chatMemory.get(userId);
-  history.push({ role, content, timestamp: new Date().toISOString() });
-  if (history.length > 100) history.shift();
+    if (!chatMemory.has(userId)) chatMemory.set(userId, []);
+    const h = chatMemory.get(userId);
+    h.push({ role, content, timestamp: new Date().toISOString() });
+    if (h.length > 100) h.shift();
 };
 
-// ===== HANDLERS POR PROVIDER =====
+// ===== SYSTEM PROMPT =====
+const getSystemPrompt = (context = {}) => `Você é ${process.env.CHATBOT_NAME || 'MedAssistente'}, assistente de IA especializado em saúde, medicina e gestão hospitalar.
 
-const callNVIDIA = async (messages, modelId) => {
-  const endpoint = `${PROVIDERS.nvidia.endpoint}/chat/completions`;
-  
-  console.log(`🤖 [NVIDIA] Chamando: ${modelId}`);
-  
-  const response = await axios.post(endpoint, {
-    model: modelId,
-    messages,
-    max_tokens: parseInt(process.env.CHATBOT_MAX_TOKENS) || 2000,
-    temperature: parseFloat(process.env.CHATBOT_TEMPERATURE) || 0.3,
-    stream: false
-  }, {
-    headers: {
-      'Authorization': `Bearer ${process.env.NVIDIA_API_KEY?.trim()}`,
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    },
-    timeout: 60000
-  });
-  
-  return response.data.choices?.[0]?.message?.content || 'Sem resposta do modelo.';
-};
+🎯 CAPACIDADES:
+1. SAÚDE E MEDICINA: dúvidas sobre doenças, sintomas, tratamentos, prevenção, medicamentos, exames, nutrição, saúde mental.
+2. GESTÃO HOSPITALAR: agendamentos, cadastros, escalas, relatórios, triagem.
 
-const callOpenAI = async (messages) => {
-  const client = PROVIDERS.openai.client;
-  if (!client) throw new Error('OpenAI client não inicializado');
-  
-  const response = await client.chat.completions.create({
-    model: 'gpt-4-turbo',
-    messages,
-    max_tokens: parseInt(process.env.CHATBOT_MAX_TOKENS) || 2000,
-    temperature: parseFloat(process.env.CHATBOT_TEMPERATURE) || 0.3
-  });
-  return response.choices[0].message.content;
-};
+📋 DIRETRIZES:
+✅ Seja claro, empático e baseie-se em evidências científicas.
+✅ Use português do Brasil. Explique termos técnicos.
+✅ Para emergências, oriente atendimento imediato.
+❌ NÃO dê diagnósticos definitivos, NÃO prescreva medicamentos, NÃO substitua médicos.
+⚠️ Inclua sempre: "Esta informação é educacional. Consulte um profissional de saúde."
 
-const callDeepSeek = async (messages) => {
-  const response = await axios.post(
-    `${PROVIDERS.deepseek.endpoint}/chat/completions`,
-    {
-      model: PROVIDERS.deepseek.model,
-      messages,
-      max_tokens: parseInt(process.env.CHATBOT_MAX_TOKENS) || 2000,
-      temperature: parseFloat(process.env.CHATBOT_TEMPERATURE) || 0.3
-    },
-    {
-      headers: {
-        'Authorization': `Bearer ${process.env.DEEPSEEK_API_KEY?.trim()}`,
-        'Content-Type': 'application/json'
-      },
-      timeout: 30000
+CONTEXTO: Hospital ${context.hospital || 'Central'} | Usuário: ${context.role || 'geral'} | Data: ${new Date().toLocaleDateString('pt-BR')}`;
+
+// ===== PROVIDERS LIST =====
+export const getAvailableProviders = () => {
+    const list = [];
+    if (PROVIDERS.nvidia.enabled) {
+        const icons = { llama: '🦙', nemotron: '⚡', qwen: '🔷', deepseek: '🔶', gemma: '💎', mistral: '🌪️' };
+        PROVIDERS.nvidia.chatModels.forEach(m => {
+            const icon = Object.entries(icons).find(([k]) => m.toLowerCase().includes(k))?.[1] || '🔵';
+            list.push({ id: `nvidia:${m}`, name: `${icon} ${m.split('/').pop().replace(/-/g, ' ')}`, provider: 'nvidia', model: m });
+        });
     }
-  );
-  return response.data.choices[0].message.content;
+    if (PROVIDERS.openai.enabled) list.push({ id: 'openai', name: '🟢 OpenAI GPT-4', provider: 'openai' });
+    if (PROVIDERS.deepseek.enabled) list.push({ id: 'deepseek', name: '🟡 DeepSeek', provider: 'deepseek' });
+    if (PROVIDERS.qwen.enabled) list.push({ id: 'qwen', name: '🔴 Qwen', provider: 'qwen' });
+    if (PROVIDERS.gemini.enabled) list.push({ id: 'gemini', name: '🟣 Gemini', provider: 'gemini' });
+    if (PROVIDERS.copilot.enabled) list.push({ id: 'copilot', name: '🔷 Copilot', provider: 'copilot' });
+    if (PROVIDERS.google.enabled) list.push({ id: 'google', name: '🔶 AI Studio', provider: 'google' });
+    if (PROVIDERS.claude.enabled) list.push({ id: 'claude', name: '🟠 Claude', provider: 'claude' });
+    return list.length ? list : [{ id: 'demo', name: '🔧 Modo Demo', provider: 'demo' }];
 };
 
-const callQwen = async (messages) => {
-  const response = await axios.post(
-    `${PROVIDERS.qwen.endpoint}/services/aigc/text-generation/generation`,
-    {
-      model: PROVIDERS.qwen.model,
-      input: { messages },
-      parameters: {
-        result_format: 'message',
-        max_tokens: parseInt(process.env.CHATBOT_MAX_TOKENS) || 2000,
-        temperature: parseFloat(process.env.CHATBOT_TEMPERATURE) || 0.3
-      }
-    },
-    {
-      headers: {
-        'Authorization': `Bearer ${process.env.QWEN_API_KEY?.trim()}`,
-        'Content-Type': 'application/json',
-        'X-DashScope-SSE': 'disable'
-      },
-      timeout: 30000
+export const switchProvider = (id) => {
+    if (id?.startsWith('nvidia:')) {
+        const m = id.replace('nvidia:', '');
+        if (PROVIDERS.nvidia.enabled && PROVIDERS.nvidia.chatModels.includes(m)) {
+            process.env.NVIDIA_CURRENT_MODEL = m; process.env.AI_PROVIDER = id;
+            return { success: true, model: m };
+        }
+        return { success: false, error: 'Modelo não disponível' };
     }
-  );
-  return response.data.output?.choices?.[0]?.message?.content || 'Sem resposta.';
+    if (id === 'demo') { process.env.AI_PROVIDER = 'demo'; return { success: true }; }
+    if (PROVIDERS[id]?.enabled) { process.env.AI_PROVIDER = id; return { success: true }; }
+    return { success: false, error: 'Provider inválido' };
 };
 
-const callGemini = async (messages) => {
-  const model = PROVIDERS.gemini.client.getGenerativeModel({ 
-    model: process.env.GEMINI_MODEL || 'gemini-pro' 
-  });
-  
-  const prompt = messages.map(m => `${m.role === 'user' ? 'Usuário' : 'Assistente'}: ${m.content}`).join('\n\n');
-  
-  const result = await model.generateContent({
-    contents: [{ role: 'user', parts: [{ text: prompt }] }],
-    generationConfig: {
-      maxOutputTokens: parseInt(process.env.CHATBOT_MAX_TOKENS) || 2000,
-      temperature: parseFloat(process.env.CHATBOT_TEMPERATURE) || 0.3
-    }
-  });
-  
-  return result.response?.text() || 'Sem resposta.';
+export const getChatHistory = (u, l = 50) => (chatMemory.get(u) || []).slice(-l);
+export const clearChatHistory = (u) => { chatMemory.delete(u); return true; };
+
+// ===== HANDLERS =====
+const callNVIDIA = async (msgs, model, apiKey) => {
+    const res = await axios.post(`${PROVIDERS.nvidia.endpoint}/chat/completions`, {
+        model, messages: msgs, max_tokens: parseInt(process.env.CHATBOT_MAX_TOKENS) || 2000,
+        temperature: parseFloat(process.env.CHATBOT_TEMPERATURE) || 0.3, stream: false
+    }, {
+        headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+        timeout: 30000
+    });
+    return res.data.choices?.[0]?.message?.content || 'Sem resposta.';
 };
 
-const callCopilot = async (messages) => {
-  const client = PROVIDERS.copilot.client;
-  if (!client) throw new Error('Copilot client não inicializado');
-  
-  const response = await client.chat.completions.create({
-    messages,
-    max_tokens: parseInt(process.env.CHATBOT_MAX_TOKENS) || 2000,
-    temperature: parseFloat(process.env.CHATBOT_TEMPERATURE) || 0.3
-  });
-  return response.choices[0].message.content;
+const callOpenAI = async (msgs) => (await PROVIDERS.openai.client.chat.completions.create({
+    model: 'gpt-4-turbo', messages: msgs, max_tokens: 2000, temperature: 0.3
+})).choices[0].message.content;
+
+const callDeepSeek = async (msgs) => (await axios.post(`${PROVIDERS.deepseek.endpoint}/chat/completions`, {
+    model: PROVIDERS.deepseek.model, messages: msgs, max_tokens: 2000, temperature: 0.3
+}, { headers: { Authorization: `Bearer ${process.env.DEEPSEEK_API_KEY.trim()}` }, timeout: 30000 })).data.choices[0].message.content;
+
+const callQwen = async (msgs) => (await axios.post(`${PROVIDERS.qwen.endpoint}/services/aigc/text-generation/generation`, {
+    model: PROVIDERS.qwen.model, input: { messages: msgs }, parameters: { result_format: 'message', max_tokens: 2000, temperature: 0.3 }
+}, { headers: { Authorization: `Bearer ${process.env.QWEN_API_KEY.trim()}`, 'X-DashScope-SSE': 'disable' }, timeout: 30000 })).data.output?.choices?.[0]?.message?.content || 'Sem resposta.';
+
+const callGemini = async (msgs) => {
+    const prompt = msgs.map(m => `${m.role === 'user' ? 'Usuário' : 'Assistente'}: ${m.content}`).join('\n\n');
+    return (await PROVIDERS.gemini.client.getGenerativeModel({ model: process.env.GEMINI_MODEL || 'gemini-pro' }).generateContent({
+        contents: [{ role: 'user', parts: [{ text: prompt }] }],
+        generationConfig: { maxOutputTokens: 2000, temperature: 0.3 }
+    })).response?.text() || 'Sem resposta.';
 };
 
-const callGoogleAIStudio = async (messages) => {
-  const response = await axios.post(
-    `${PROVIDERS.google.endpoint}/models/gemini-pro:generateContent?key=${process.env.GOOGLE_AI_STUDIO_KEY?.trim()}`,
-    {
-      contents: messages.filter(m => m.role === 'user').map(m => ({
-        parts: [{ text: m.content }]
-      })),
-      generationConfig: {
-        maxOutputTokens: parseInt(process.env.CHATBOT_MAX_TOKENS) || 2000,
-        temperature: parseFloat(process.env.CHATBOT_TEMPERATURE) || 0.3
-      }
-    },
+const callCopilot = async (msgs) => (await PROVIDERS.copilot.client.chat.completions.create({
+    messages: msgs, max_tokens: 2000, temperature: 0.3
+})).choices[0].message.content;
+
+const callGoogleAI = async (msgs) => (await axios.post(
+    `${PROVIDERS.google.endpoint}/models/gemini-pro:generateContent?key=${process.env.GOOGLE_AI_STUDIO_KEY.trim()}`,
+    { contents: msgs.filter(m => m.role === 'user').map(m => ({ parts: [{ text: m.content }] })), generationConfig: { maxOutputTokens: 2000, temperature: 0.3 } },
     { timeout: 30000 }
-  );
-  return response.data.candidates?.[0]?.content?.parts?.[0]?.text || 'Sem resposta.';
-};
+)).data.candidates?.[0]?.content?.parts?.[0]?.text || 'Sem resposta.';
 
-const callClaude = async (messages) => {
-  const client = PROVIDERS.claude.client;
-  if (!client) throw new Error('Claude client não inicializado');
-  
-  const systemMessage = messages.find(m => m.role === 'system')?.content || '';
-  const claudeMessages = messages
-    .filter(m => m.role !== 'system')
-    .map(m => ({
-      role: m.role === 'assistant' ? 'assistant' : 'user',
-      content: m.content
-    }));
-  
-  const response = await client.messages.create({
-    model: process.env.CLAUDE_MODEL || 'claude-3-sonnet-20240229',
-    system: systemMessage,
-    messages: claudeMessages,
-    max_tokens: parseInt(process.env.CHATBOT_MAX_TOKENS) || 2000,
-    temperature: parseFloat(process.env.CHATBOT_TEMPERATURE) || 0.3
-  });
-  
-  return response.content?.[0]?.text || 'Sem resposta.';
+const callClaude = async (msgs) => {
+    const sys = msgs.find(m => m.role === 'system')?.content || '';
+    const cMsgs = msgs.filter(m => m.role !== 'system').map(m => ({ role: m.role === 'assistant' ? 'assistant' : 'user', content: m.content }));
+    return (await PROVIDERS.claude.client.messages.create({
+        model: process.env.CLAUDE_MODEL || 'claude-3-sonnet-20240229', system: sys, messages: cMsgs, max_tokens: 2000, temperature: 0.3
+    })).content[0].text;
 };
 
 // ===== MODO DEMO =====
-const getMockResponse = (userMessage, context) => {
-  const msg = userMessage.toLowerCase();
-  
-  if (msg.includes('consulta') || msg.includes('agendar')) {
-    return `📅 **Agendamento de Consultas**
-    
-Para agendar:
-1. Acesse "Consultas" no menu
-2. Clique em "+ Agendar Consulta"
-3. Preencha os dados do paciente
-4. Selecione médico e horário
+const getMockResponse = (q) => {
+    const qL = q.toLowerCase();
 
-Precisa de ajuda com algo específico?`;
-  }
-  if (msg.includes('paciente') || msg.includes('cadastrar')) {
-    return `👥 **Cadastro de Pacientes**
-    
-1. Vá em "Pacientes"
-2. Clique em "+ Novo Paciente"
-3. Preencha: Nome, CPF, Data de Nascimento, Telefone, Convênio
+    // Respostas hardcoded para temas comuns
+    if (qL.includes('covid') || qL.includes('corona')) return `🦠 **COVID-19**: Doença respiratória causada pelo SARS-CoV-2. Sintomas: febre, tosse, cansaço, perda de olfato/paladar. Prevenção: vacina, máscara, higiene. Tratamento: repouso, hidratação. Casos graves exigem hospital. ⚠️ Procure médico se faltar ar.`;
+    if (qL.includes('diabetes')) return `🩺 **Diabetes**: Incapacidade de metabolizar glicose. Tipo 1 (autoimune), Tipo 2 (resistência à insulina). Sintomas: sede excessiva, urina frequente, fadiga. Controle: dieta, exercício, monitoramento, medicação. ⚠️ Acompanhamento médico regular é essencial.`;
+    if (qL.includes('pressão') || qL.includes('hiperten')) return `❤️ **Hipertensão**: Pressão arterial ≥140/90 mmHg. Riscos: AVC, infarto, renal. Controle: reduzir sal, exercício, peso, evitar álcool/cigarro, medicamentos. ⚠️ Meça regularmente e siga orientação médica.`;
+    if (qL.includes('consulta') || qL.includes('agenda')) return `📅 **Agendamento**: Menu "Consultas" → "+ Nova Consulta". Selecione paciente, médico, data/hora. Chegue 15min antes com documentos e convênio.`;
+    if (qL.includes('paciente') || qL.includes('cadastro')) return `👥 **Cadastro**: Menu "Pacientes" → "+ Novo". Preencha nome, CPF, nascimento, telefone, convênio, sangue. ID gerado automaticamente.`;
+    if (qL.includes('relatório')) return `📊 **Relatórios**: Menu "Relatórios". Filtre por período/especialidade. Exporte em PDF/Excel. Inclui atendimentos, pacientes, financeiro e produtividade.`;
 
-O sistema gera ID automático!`;
-  }
-  if (msg.includes('relatório') || msg.includes('métrica')) {
-    return `📊 **Relatórios Disponíveis**
-    
-• Dashboard: visão geral em tempo real
-• Atendimentos: por período/especialidade
-• Pacientes: ativos, inativos, novos
-• Financeiro: consultas realizadas
-• Produtividade: por médico
+    // Fallback genérico para saúde
+    const healthKeywords = ['vírus', 'bactéria', 'doença', 'sintoma', 'tratamento', 'medicamento', 'exame', 'diagnóstico', 'prevenção', 'vacina', 'infecção', 'câncer', 'coração', 'asma', 'alergia', 'gripe'];
+    if (healthKeywords.some(k => qL.includes(k))) {
+        const topic = qL.match(/(?:o que é|sobre|fale sobre)\s+([a-zá-ú]+)/)?.[1] || 'este tema';
+        return `🔍 **Sobre ${topic}**\n\nEsta é uma resposta educacional. Para orientações específicas sobre diagnóstico ou tratamento, **consulte um médico**.\n\n📋 Fontes confiáveis:\n• Ministério da Saúde: www.gov.br/saude\n• OMS: www.who.int\n\n💡 Posso ajudar com:\n- Agendar consultas\n- Cadastrar pacientes\n- Verificar escalas\n- Gerar relatórios\n\nComo posso auxiliar?`;
+    }
 
-Qual deseja visualizar?`;
-  }
-  
-  return `🏥 **MedAssistente - NVIDIA NIM**
-
-Estou rodando com modelos NVIDIA de última geração:
-
-${PROVIDERS.nvidia.chatModels.map(m => `• 🔵 ${m.split('/').pop()}`).join('\n') || '• Aguardando configuração'}
-
-Posso ajudar com:
-📅 Consultas | 👥 Pacientes | 👨‍⚕️ Médicos
-📊 Relatórios | 🎫 Atendimentos | ⚙️ Configurações
-
-Como posso ajudar?`;
+    return `🏥 **MedAssistente - Modo Demo**\n\nSem conexão com IA no momento. Posso ajudar com:\n🩺 Informações básicas (COVID, Diabetes, Pressão, Agendamentos, Cadastros, Relatórios)\n📋 Gestão do sistema hospitalar\n\n⚠️ Para dúvidas médicas específicas, consulte um profissional ou configure uma chave de API.\n\nComo posso ajudar?`;
 };
 
 // ===== FUNÇÃO PRINCIPAL =====
 export const sendMessage = async (userMessage, options = {}) => {
-  const { context = {}, provider, userId = 'anonymous' } = options;
-  
-  console.log(`📩 Mensagem: ${userMessage.substring(0, 50)}... | Provider: ${provider}`);
-  
-  // Modo demo ou provider não configurado
-  if (!provider || provider === 'demo' || !PROVIDERS.nvidia.enabled) {
-    const response = getMockResponse(userMessage, context);
-    saveToHistory(userId, 'user', userMessage);
-    saveToHistory(userId, 'assistant', response);
-    return {
-      message: response,
-      provider: 'Modo Demo',
-      timestamp: new Date().toISOString(),
-      meta: { mock: true }
-    };
-  }
-  
-  // Extrair modelId do provider (formato: "nvidia:model_id")
-  let modelId = PROVIDERS.nvidia.defaultModel;
-  let providerName = 'NVIDIA NIM';
-  
-  if (provider?.startsWith('nvidia:')) {
-    modelId = provider.replace('nvidia:', '');
-    const modelName = modelId.split('/').pop()?.replace(/-/g, ' ');
-    providerName = modelName ? `NVIDIA: ${modelName}` : 'NVIDIA NIM';
-  }
-  
-  const messages = [
-    { role: 'system', content: getSystemPrompt(context) },
-    ...getChatHistory(userId, 10).map(h => ({ role: h.role, content: h.content })),
-    { role: 'user', content: userMessage }
-  ];
-  
-  saveToHistory(userId, 'user', userMessage);
-  
-  try {
-    console.log(`🤖 Processando com: ${providerName} (${modelId})`);
-    
-    let response;
-    
-    if (provider?.startsWith('nvidia:')) {
-      response = await callNVIDIA(messages, modelId);
-    } else if (provider === 'openai') {
-      response = await callOpenAI(messages);
-    } else if (provider === 'deepseek') {
-      response = await callDeepSeek(messages);
-    } else if (provider === 'qwen') {
-      response = await callQwen(messages);
-    } else if (provider === 'gemini') {
-      response = await callGemini(messages);
-    } else if (provider === 'copilot') {
-      response = await callCopilot(messages);
-    } else if (provider === 'google') {
-      response = await callGoogleAIStudio(messages);
-    } else if (provider === 'claude') {
-      response = await callClaude(messages);
-    } else {
-      throw new Error(`Provider "${provider}" não implementado`);
+    const { context = {}, provider, userId = 'anonymous' } = options;
+    console.log(`📩 Msg: ${userMessage.substring(0, 40)}... | Prov: ${provider}`);
+
+    // 1. TENTATIVA DIRETA NVIDIA (IGNORA FLAG ENABLED SE HOUVER CHAVE VÁLIDA)
+    const nvidiaKey = process.env.NVIDIA_API_KEY?.trim();
+    if (nvidiaKey && nvidiaKey.startsWith('nvapi-') && nvidiaKey.length >= 50) {
+        try {
+            const model = provider?.startsWith('nvidia:')
+                ? provider.replace('nvidia:', '')
+                : (process.env.NVIDIA_DEFAULT_MODEL || 'meta/llama-3.1-70b-instruct');
+
+            const msgs = [
+                { role: 'system', content: getSystemPrompt(context) },
+                ...getChatHistory(userId, 10).map(h => ({ role: h.role, content: h.content })),
+                { role: 'user', content: userMessage }
+            ];
+            saveToHistory(userId, 'user', userMessage);
+
+            console.log(`🚀 Chamando NVIDIA API direto: ${model}`);
+            const res = await axios.post(
+                `${process.env.NVIDIA_BASE_URL || 'https://integrate.api.nvidia.com/v1'}/chat/completions`,
+                {
+                    model, messages: msgs, max_tokens: parseInt(process.env.CHATBOT_MAX_TOKENS) || 2000,
+                    temperature: parseFloat(process.env.CHATBOT_TEMPERATURE) || 0.3, stream: false
+                },
+                {
+                    headers: { Authorization: `Bearer ${nvidiaKey}`, 'Content-Type': 'application/json' },
+                    timeout: 30000
+                }
+            );
+
+            const aiText = res.data.choices?.[0]?.message?.content || 'A IA não retornou texto.';
+            saveToHistory(userId, 'assistant', aiText);
+            console.log('✅ NVIDIA respondeu com sucesso');
+            return { message: aiText, provider: `NVIDIA (${model.split('/').pop()})`, timestamp: new Date().toISOString(), meta: { model, fromAPI: true } };
+        } catch (e) {
+            console.log(`⚠️ Falha NVIDIA API: ${e.message}. Usando fallback.`);
+        }
     }
-    
-    saveToHistory(userId, 'assistant', response);
-    
-    return {
-      message: response,
-      provider: providerName,
-      timestamp: new Date().toISOString(),
-      meta: { model: modelId }
-    };
-    
-  } catch (error) {
-    console.error(`❌ Erro em ${provider}:`, error.message);
-    
-    const fallback = `⚠️ **Erro ao processar**
 
-Detalhes: ${error.message}
+    // 2. OUTROS PROVIDERS (se habilitados)
+    if (provider === 'openai' && PROVIDERS.openai.enabled) {
+        const msgs = [{ role: 'system', content: getSystemPrompt(context) }, ...getChatHistory(userId, 10).map(h => ({ role: h.role, content: h.content })), { role: 'user', content: userMessage }];
+        saveToHistory(userId, 'user', userMessage);
+        const r = await callOpenAI(msgs); saveToHistory(userId, 'assistant', r);
+        return { message: r, provider: 'OpenAI', timestamp: new Date().toISOString() };
+    }
+    if (provider === 'deepseek' && PROVIDERS.deepseek.enabled) {
+        const msgs = [{ role: 'system', content: getSystemPrompt(context) }, ...getChatHistory(userId, 10).map(h => ({ role: h.role, content: h.content })), { role: 'user', content: userMessage }];
+        saveToHistory(userId, 'user', userMessage);
+        const r = await callDeepSeek(msgs); saveToHistory(userId, 'assistant', r);
+        return { message: r, provider: 'DeepSeek', timestamp: new Date().toISOString() };
+    }
+    if (provider === 'qwen' && PROVIDERS.qwen.enabled) {
+        const msgs = [{ role: 'system', content: getSystemPrompt(context) }, ...getChatHistory(userId, 10).map(h => ({ role: h.role, content: h.content })), { role: 'user', content: userMessage }];
+        saveToHistory(userId, 'user', userMessage);
+        const r = await callQwen(msgs); saveToHistory(userId, 'assistant', r);
+        return { message: r, provider: 'Qwen', timestamp: new Date().toISOString() };
+    }
+    if (provider === 'gemini' && PROVIDERS.gemini.enabled) {
+        const msgs = [{ role: 'system', content: getSystemPrompt(context) }, ...getChatHistory(userId, 10).map(h => ({ role: h.role, content: h.content })), { role: 'user', content: userMessage }];
+        saveToHistory(userId, 'user', userMessage);
+        const r = await callGemini(msgs); saveToHistory(userId, 'assistant', r);
+        return { message: r, provider: 'Gemini', timestamp: new Date().toISOString() };
+    }
+    if (provider === 'copilot' && PROVIDERS.copilot.enabled) {
+        const msgs = [{ role: 'system', content: getSystemPrompt(context) }, ...getChatHistory(userId, 10).map(h => ({ role: h.role, content: h.content })), { role: 'user', content: userMessage }];
+        saveToHistory(userId, 'user', userMessage);
+        const r = await callCopilot(msgs); saveToHistory(userId, 'assistant', r);
+        return { message: r, provider: 'Copilot', timestamp: new Date().toISOString() };
+    }
+    if (provider === 'google' && PROVIDERS.google.enabled) {
+        const msgs = [{ role: 'system', content: getSystemPrompt(context) }, ...getChatHistory(userId, 10).map(h => ({ role: h.role, content: h.content })), { role: 'user', content: userMessage }];
+        saveToHistory(userId, 'user', userMessage);
+        const r = await callGoogleAI(msgs); saveToHistory(userId, 'assistant', r);
+        return { message: r, provider: 'Google AI', timestamp: new Date().toISOString() };
+    }
+    if (provider === 'claude' && PROVIDERS.claude.enabled) {
+        const msgs = [{ role: 'system', content: getSystemPrompt(context) }, ...getChatHistory(userId, 10).map(h => ({ role: h.role, content: h.content })), { role: 'user', content: userMessage }];
+        saveToHistory(userId, 'user', userMessage);
+        const r = await callClaude(msgs); saveToHistory(userId, 'assistant', r);
+        return { message: r, provider: 'Claude', timestamp: new Date().toISOString() };
+    }
 
-Tente:
-1. Verificar sua conexão com a internet
-2. Confirmar que o modelo está disponível
-3. Trocar para outro modelo no seletor
-
-Enquanto isso, posso ajudar com informações do sistema.`;
-    
-    saveToHistory(userId, 'assistant', fallback);
-    
-    return {
-      message: fallback,
-      provider: 'Erro',
-      timestamp: new Date().toISOString(),
-      meta: { error: error.message, fallback: true }
-    };
-  }
+    // 3. FALLBACK DEMO
+    const demoRes = getMockResponse(userMessage);
+    saveToHistory(userId, 'user', userMessage);
+    saveToHistory(userId, 'assistant', demoRes);
+    return { message: demoRes, provider: 'Modo Demo', timestamp: new Date().toISOString(), meta: { mock: true } };
 };
